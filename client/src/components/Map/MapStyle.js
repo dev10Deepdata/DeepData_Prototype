@@ -4,7 +4,7 @@ import styled from 'styled-components';
 export const MapW = styled.div`
   border: #ffb100 8px solid;
   border-radius: 10px;
-  box-shadow: 0px 0px 12px 1px #555555
+  box-shadow: 0px 0px 12px 1px #555555;
 `;
 export const MapWrapper = styled.div`
   width: 100%;
@@ -45,6 +45,8 @@ export const ButtonWrapper = styled.div`
     flex-direction: column;
   }
   button {
+    font-family: Noto_Sans_Medium;
+
     width: 100px;
     height: 31px;
     border: none;
@@ -53,6 +55,7 @@ export const ButtonWrapper = styled.div`
   }
 `;
 export const PointInfoWrapper = styled.div`
+  font-family: Noto_Sans_Bold;
   width: 100%;
   height: 70px;
   display: flex;
@@ -62,6 +65,7 @@ export const PointInfoWrapper = styled.div`
   border-bottom: 2px solid #000;
 
   button {
+    font-family: Noto_Sans_Bold;
     display: block;
     position: relative;
     float: left;

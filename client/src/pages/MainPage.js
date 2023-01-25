@@ -15,6 +15,7 @@ const MainLayout = styled.div`
   }
 `;
 const Title = styled.div`
+font-family: Hind_Siliguri_SemiBold;
   font-size: 1.2rem;
   font-weight: 600;
   margin-left: 10px;

@@ -39,4 +39,87 @@
 
 <br>
 
+- 기본 인적사항 기입 페이지
+
+```
+: 기본적인 인적사항을 클릭 후[ Go ] 버튼 클릭시 DataBase에 채크 된 인적사항을 저장 한다. <br>
+
+1. 성별, 연령별 관심있는 지역과 관심있는 회사의 통계를 내기 위해 사용 한다.
+```
+
+<br>
+
+<div align=center>
+
+![join_view](https://user-images.githubusercontent.com/123555721/214609339-61237a45-39b3-489f-9fed-a257e60f3095.gif)
+
+</div>
+
+<br>
+
+<img src='./readme/visits0126.png' />
+
+<br>
+
+- 메인 페이지
+
+<br>
+
+<div align=center>
+
+![main_view](https://user-images.githubusercontent.com/123555721/214609616-19466732-8629-4f5b-936b-80b8558c1c42.gif)
+
+</div>
+
+<br>
+
+- 카카오맵 API 시군 및 읍면동에 대한 폴리곤 정의 및 이동
+
+<br>
+
+<div align=center>
+
+![move_view](https://user-images.githubusercontent.com/123555721/214609910-6fa0c49c-383b-4b65-a12d-c6aab326a417.gif)
+
+</div>
+
+<br>
+
+- 마커 클릭 시 회사 정보 제공 및 관심 버튼 정의
+
+```
+1. 마커 클릭시 회사에 대한 정보제공 _ 회사명, 주소, 대표이름, 법인번호, 사업자번호
+
+2. 관심 버튼 클릭시 DB에 저장
+```
+
+<br>
+
+<img src='./readme/company0126.png' />
+<img src='./readme/like0126.png' />
+
+<br>
+
+- 추가 정보 검색을 위한 구글 검색 연동
+
+<br>
+
+<div align=center>
+
+![seach_view](https://user-images.githubusercontent.com/123555721/214610129-cda9271b-f4e8-4710-ba61-8e98c79bf5e8.gif)
+
+</div>
+
+<br>
+
+- 출발지, 목적지 지정을 통한 포인트간 직선 거리( M 단위 ) 제공
+
+<br>
+
+<div align=center>
+
+![distance_view](https://user-images.githubusercontent.com/123555721/214610197-8475fef7-6c8d-45da-a8f0-1db44e833ff4.gif)
+
+</div>
+
 <br>

@@ -1,8 +1,55 @@
+@font-face {
+  font-family: Hind_Siliguri_Regular;
+  src: url('./assets/fonts/Hind_Siliguri/HindSiliguri-Regular.ttf');
+}
+@font-face {
+  font-family: Hind_Siliguri_Light;
+  src: url('./assets/fonts/Hind_Siliguri/HindSiliguri-Light.ttf');
+}
+@font-face {
+  font-family: Hind_Siliguri_SemiBold;
+  src: url('./assets/fonts/Hind_Siliguri/HindSiliguri-SemiBold.ttf');
+}
+@font-face {
+  font-family: Hind_Siliguri_Bold;
+  src: url('./assets/fonts/Hind_Siliguri/HindSiliguri-Bold.ttf');
+}
+@font-face {
+  font-family: Righteous;
+  src: url('./assets/fonts/Righteous/Righteous-Regular.ttf');
+}
+@font-face {
+  font-family: Noto_Sans_Light;
+  src: url('./assets/fonts/Noto_Sans_KR/NotoSansKR-Light.otf');
+}
+@font-face {
+  font-family: Noto_Sans_Regular;
+  src: url('./assets/fonts/Noto_Sans_KR/NotoSansKR-Regular.otf');
+}
+@font-face {
+  font-family: Noto_Sans_Medium;
+  src: url('./assets/fonts/Noto_Sans_KR/NotoSansKR-Medium.otf');
+}
+@font-face {
+  font-family: Noto_Sans_Bold;
+  src: url('./assets/fonts/Noto_Sans_KR/NotoSansKR-Bold.otf');
+}
+@font-face {
+  font-family: Sunflower_Light;
+  src: url('./assets/fonts/Sunflower/Sunflower-Light.ttf');
+}
+@font-face {
+  font-family: Sunflower_Medium;
+  src: url('./assets/fonts/Sunflower/Sunflower-Medium.ttf');
+}
+@font-face {
+  font-family: Sunflower_Bold;
+  src: url('./assets/fonts/Sunflower/Sunflower-Bold.ttf');
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: Noto_Sans_Medium;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

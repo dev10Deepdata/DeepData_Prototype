@@ -25,11 +25,12 @@ const Wrapper = styled.div`
 
   h1 {
     color: #fff;
-    font-weight: 800;
+    font-family: Righteous;
     margin-top: 50px;
   }
   p {
-    color: #205295;
+    color: #A3C7D6;
+    font-family: Hind_Siliguri_Light;
     margin-bottom: 50px;
   }
   @media screen and (max-width: 767px) {
@@ -66,7 +67,7 @@ const Wrapper = styled.div`
     border: none;
     color: #fff;
     font-size: 1rem;
-    font-weight: 600;
+    font-family: Righteous;
     background-color: #00337c;
     border-radius: 10px;
     border-bottom: 1px #000 solid;

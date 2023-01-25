@@ -33,6 +33,7 @@ const Banner2 = styled.div`
   }
 `;
 const TopNav = styled.div`
+  font-family: Hind_Siliguri_SemiBold;
   position: relative;
   z-index: 100;
   top: 0;
@@ -73,8 +74,8 @@ const MyInfo = styled.div`
 `;
 const Logo = styled.div`
   color: #fff;
+  font-family: Righteous;
   font-size: 1.6rem;
-  font-weight: 800;
   margin-left: 20px;
   margin-right: 20px;
 `;

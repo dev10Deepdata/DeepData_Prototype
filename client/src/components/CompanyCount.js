@@ -5,8 +5,8 @@ import { CnEng } from '../api/chungnam';
 
 // styled
 const CompanyWrapper = styled.div`
-box-shadow: 0px 0px 12px 1px #555555;
-  background-color: #A0C3D2;
+  box-shadow: 0px 0px 12px 1px #555555;
+  background-color: #a0c3d2;
   width: 100%;
   margin-top: 13px;
   margin-left: auto;
@@ -19,6 +19,7 @@ box-shadow: 0px 0px 12px 1px #555555;
 
 const Wrapper = styled.div`
   .sym {
+    font-family: Hind_Siliguri_Regular;
     background-color: #fff;
     display: inline-block;
     margin: 5px;
