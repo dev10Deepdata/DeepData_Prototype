@@ -4,6 +4,8 @@ import axios from 'axios';
 
 import { CNcity, CnLocation } from '../../api/chungnam';
 import geojson from '../../api/TL_SCCO_SIG.json';
+import koreaDo from '../../api/korea_do.json';
+
 import EupMyeonDong from '../../api/HJD.json';
 
 import ButtonGroup from '../ButtonGroup';
@@ -80,17 +82,24 @@ const Map = () => {
 
     const customOverlay = new kakao.maps.CustomOverlay({});
 
+    // 도, 특별시, 광역시
+    let DoData = geojson.features; // 해당 구역 이름, 좌표 등
+    let DoCoordinates = []; // 좌표 저장
+    let DoName = ''; // 행정구 이름
+
     // 시군구
     let data = geojson.features; // 해당 구역 이름, 좌표 등
     let coordinates = []; // 좌표 저장
     let name = ''; // 행정구 이름
 
-    let polygons = [];
-
+    
     // 읍면동
     let EmdData = EupMyeonDong.features; // 해당 구역 이름, 좌표 등
     let EmdCoordinates = []; // 좌표 저장
     let EmdName = ''; // 읍면동 이름
+    
+    // 폴리곤 보관
+    let polygons = [];
 
     /**
      * 초기값 false (화면 버튼을 눌러도 동작하지 않게 설정)
