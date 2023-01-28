@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import { CNcity, CnLocation } from '../../api/chungnam';
 import geojson from '../../api/TL_SCCO_SIG.json';
-import koreaDo from '../../api/korea_do.json';
+import koreaDo from '../../api/korea_do_data.json';
 
 import EupMyeonDong from '../../api/HJD.json';
 
@@ -83,7 +83,7 @@ const Map = () => {
     const customOverlay = new kakao.maps.CustomOverlay({});
 
     // 도, 특별시, 광역시
-    let DoData = geojson.features; // 해당 구역 이름, 좌표 등
+    let DoData = koreaDo.features; // 해당 구역 이름, 좌표 등
     let DoCoordinates = []; // 좌표 저장
     let DoName = ''; // 행정구 이름
 
@@ -92,12 +92,11 @@ const Map = () => {
     let coordinates = []; // 좌표 저장
     let name = ''; // 행정구 이름
 
-    
     // 읍면동
     let EmdData = EupMyeonDong.features; // 해당 구역 이름, 좌표 등
     let EmdCoordinates = []; // 좌표 저장
     let EmdName = ''; // 읍면동 이름
-    
+
     // 폴리곤 보관
     let polygons = [];
 
@@ -366,22 +365,37 @@ const Map = () => {
       markers = [];
     };
 
-    data.forEach((val) => {
-      coordinates = val.geometry.coordinates;
-      name = val.properties.SIG_KOR_NM;
-      displayArea(coordinates, name);
+    // 시군구
+    // data.forEach((val) => {
+    //   coordinates = val.geometry.coordinates;
+    //   name = val.properties.SIG_KOR_NM;
+    //   displayArea(coordinates, name);
+    // });
+
+    // 충청남도
+    DoData.forEach((val) => {
+      console.log(val);
+      DoCoordinates = val.geometry.coordinates;
+      DoName = val.properties.CTP_ENG_NM;
+      displayArea(DoCoordinates, DoName);
     });
 
     function displayArea(coordinates, name, type) {
       let path = [];
       let points = [];
 
-      coordinates[0].forEach((coordinate) => {
-        let point = {};
-        point.x = coordinate[1];
-        point.y = coordinate[0];
-        points.push(point);
-        path.push(new kakao.maps.LatLng(coordinate[1], coordinate[0]));
+      coordinates.forEach((v) => {
+        let tempPath = [];
+        let tempPoint = [];
+        v.forEach((coordinate) => {
+          let point = {};
+          point.x = coordinate[1];
+          point.y = coordinate[0];
+          tempPoint.push(point);
+          tempPath.push(new kakao.maps.LatLng(coordinate[1], coordinate[0]));
+        });
+        path.push(tempPath);
+        points.push(tempPoint);
       });
 
       // 구역 경계 생성
