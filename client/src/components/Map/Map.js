@@ -383,28 +383,29 @@ const Map = () => {
     // });
 
     // 시군구
-    // SiData.forEach((val) => {
-    //   SiCoordinates = val.geometry.coordinates;
-    //   SiName = val.properties.SIG_KOR_NM;
-    //   displayArea(SiCoordinates, SiName);
-    // });
-
-    // // 충청남도
-    DoData.forEach((val) => {
-      console.log(val);
-      DoCoordinates = val.geometry.coordinates;
-      DoName = val.properties.CTP_ENG_NM;
-      stateDisplayArea(
-        DoCoordinates,
-        DoName,
-        polygons,
-        map,
-        customOverlay,
-        draggable
-      );
+    SiData.forEach((val) => {
+      SiCoordinates = val.geometry.coordinates;
+      SiName = val.properties.SIG_KOR_NM;
+      let SigCd = val.properties.SIG_CD;
+      displayArea(SiCoordinates, SiName, SigCd);
     });
 
-    function displayArea(coordinates, name, type) {
+    // // 충청남도
+    // DoData.forEach((val) => {
+    //   console.log(val);
+    //   DoCoordinates = val.geometry.coordinates;
+    //   DoName = val.properties.CTP_ENG_NM;
+    //   stateDisplayArea(
+    //     DoCoordinates,
+    //     DoName,
+    //     polygons,
+    //     map,
+    //     customOverlay,
+    //     draggable
+    //   );
+    // });
+
+    function displayArea(coordinates, name, SigCd) {
       let path = [];
       let points = [];
 
@@ -424,85 +425,85 @@ const Map = () => {
 
       // 구역 경계 생성
       let polygon;
-      if (!type) {
-        polygon = new kakao.maps.Polygon({
-          map: map,
-          path: path, // 그려질 다각형의 좌표 배열입니다
-          strokeWeight: 2, // 선의 두께입니다
-          strokeColor: '#004c80', // 선의 색깔입니다
-          strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-          strokeStyle: 'solid', // 선의 스타일입니다
-          fillColor: '#fff', // 채우기 색깔입니다
-          fillOpacity: 0.4, // 채우기 불투명도 입니다
-        });
-      } else {
-        polygon = new kakao.maps.Polygon({
-          map: map,
-          path: path, // 그려질 다각형의 좌표 배열입니다
-          strokeWeight: 2, // 선의 두께입니다
-          strokeColor: '#004c80', // 선의 색깔입니다
-          strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-          strokeStyle: 'solid', // 선의 스타일입니다
-          fillColor: '#fff', // 채우기 색깔입니다
-          fillOpacity: 0.1, // 채우기 불투명도 입니다
-        });
-      }
+      // if (!type) {
+      //   polygon = new kakao.maps.Polygon({
+      //     map: map,
+      //     path: path, // 그려질 다각형의 좌표 배열입니다
+      //     strokeWeight: 2, // 선의 두께입니다
+      //     strokeColor: '#004c80', // 선의 색깔입니다
+      //     strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+      //     strokeStyle: 'solid', // 선의 스타일입니다
+      //     fillColor: '#fff', // 채우기 색깔입니다
+      //     fillOpacity: 0.4, // 채우기 불투명도 입니다
+      //   });
+      // } else {
+      polygon = new kakao.maps.Polygon({
+        map: map,
+        path: path, // 그려질 다각형의 좌표 배열입니다
+        strokeWeight: 2, // 선의 두께입니다
+        strokeColor: '#004c80', // 선의 색깔입니다
+        strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+        strokeStyle: 'solid', // 선의 스타일입니다
+        fillColor: '#fff', // 채우기 색깔입니다
+        fillOpacity: 0.1, // 채우기 불투명도 입니다
+      });
+      // }
       polygons.push(polygon);
 
-      if (!type) {
-        // 다각형에 mouseover 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 변경합니다
-        // 지역명을 표시하는 커스텀오버레이를 지도위에 표시합니다
-        kakao.maps.event.addListener(
-          polygon,
-          'mouseover',
-          function (mouseEvent) {
-            polygon.setOptions({ fillColor: '#09f' });
-            draggable = false;
-            map.setDraggable(draggable);
-          }
-        );
+      // if (!type) {
+      //   // 다각형에 mouseover 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 변경합니다
+      //   // 지역명을 표시하는 커스텀오버레이를 지도위에 표시합니다
+      //   kakao.maps.event.addListener(
+      //     polygon,
+      //     'mouseover',
+      //     function (mouseEvent) {
+      //       polygon.setOptions({ fillColor: '#09f' });
+      //       draggable = false;
+      //       map.setDraggable(draggable);
+      //     }
+      //   );
 
-        // 다각형에 mousemove 이벤트를 등록하고 이벤트가 발생하면 커스텀 오버레이의 위치를 변경합니다
-        kakao.maps.event.addListener(
-          polygon,
-          'mousemove',
-          function (mouseEvent) {
-            customOverlay.setPosition(mouseEvent.latLng);
-          }
-        );
+      //   // 다각형에 mousemove 이벤트를 등록하고 이벤트가 발생하면 커스텀 오버레이의 위치를 변경합니다
+      //   kakao.maps.event.addListener(
+      //     polygon,
+      //     'mousemove',
+      //     function (mouseEvent) {
+      //       customOverlay.setPosition(mouseEvent.latLng);
+      //     }
+      //   );
 
-        // 다각형에 mouseout 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 원래색으로 변경합니다
-        // 커스텀 오버레이를 지도에서 제거합니다
-        kakao.maps.event.addListener(polygon, 'mouseout', function () {
-          draggable = true;
-          map.setDraggable(draggable);
+      //   // 다각형에 mouseout 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 원래색으로 변경합니다
+      //   // 커스텀 오버레이를 지도에서 제거합니다
+      //   kakao.maps.event.addListener(polygon, 'mouseout', function () {
+      //     draggable = true;
+      //     map.setDraggable(draggable);
 
-          polygon.setOptions({ fillColor: '#fff' });
-          customOverlay.setMap(null);
-        });
-      }
+      //     polygon.setOptions({ fillColor: '#fff' });
+      //     customOverlay.setMap(null);
+      //   });
+      // }
       kakao.maps.event.addListener(polygon, 'click', function (mouseEvent) {
         draggable = true;
         map.setDraggable(draggable);
-        if (type) {
-          console.log('test');
-          let level = 8;
-          map.setLevel(level, {
-            anchor: centroid(points),
-            animate: {
-              duration: 50, //확대 애니메이션 시간
-            },
-          });
-          return;
-        }
-        console.log(points);
-        let level = 12;
-        map.setLevel(level, {
-          anchor: centroid(points),
-          animate: {
-            duration: 50, //확대 애니메이션 시간
-          },
-        });
+        // if (type) {
+        //   console.log('test');
+        //   let level = 8;
+        //   map.setLevel(level, {
+        //     anchor: centroid(points),
+        //     animate: {
+        //       duration: 50, //확대 애니메이션 시간
+        //     },
+        //   });
+        //   return;
+        // }
+        console.log(name, ' : ', SigCd);
+        // let level = 12;
+        // map.setLevel(level, {
+        //   anchor: centroid(points),
+        //   animate: {
+        //     duration: 50, //확대 애니메이션 시간
+        //   },
+        // });
 
         // 기존 폴리곤을 지우고 읍면동 폴리곤 생성
         // deletePolygon(polygons);
