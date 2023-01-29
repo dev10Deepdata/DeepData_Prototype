@@ -5,6 +5,7 @@ import axios from 'axios';
 import { CNcity, CnLocation } from '../../api/chungnam';
 import geojson from '../../api/TL_SCCO_SIG.json';
 import koreaDo from '../../api/korea_do_data.json';
+import koreaSi from '../../api/korea_si.json';
 
 import EupMyeonDong from '../../api/HJD.json';
 
@@ -18,7 +19,11 @@ import {
   PointInfoWrapper,
   InfoWrapper,
 } from './MapStyle';
-import { centroid, sideBtnAddEvent } from './Function_map/kakaoMapApi';
+import {
+  centroid,
+  sideBtnAddEvent,
+  stateDisplayArea,
+} from './Function_map/kakaoMapApi';
 
 const Map = () => {
   const { kakao } = window;
@@ -75,8 +80,8 @@ const Map = () => {
   useEffect(() => {
     const container = document.getElementById('kakaoMap');
     const options = {
-      center: new kakao.maps.LatLng(36.545300108494835, 126.88998078116987),
-      level: 11,
+      center: new kakao.maps.LatLng(36.6017606568142, 127.80702241209042),
+      level: 13,
     };
     const map = new kakao.maps.Map(container, options);
 
@@ -91,6 +96,11 @@ const Map = () => {
     let data = geojson.features; // 해당 구역 이름, 좌표 등
     let coordinates = []; // 좌표 저장
     let name = ''; // 행정구 이름
+
+    // 시군구
+    let SiData = koreaSi.features; // 해당 구역 이름, 좌표 등
+    let SiCoordinates = []; // 좌표 저장
+    let SiName = ''; // 행정구 이름
 
     // 읍면동
     let EmdData = EupMyeonDong.features; // 해당 구역 이름, 좌표 등
@@ -372,12 +382,26 @@ const Map = () => {
     //   displayArea(coordinates, name);
     // });
 
-    // 충청남도
+    // 시군구
+    // SiData.forEach((val) => {
+    //   SiCoordinates = val.geometry.coordinates;
+    //   SiName = val.properties.SIG_KOR_NM;
+    //   displayArea(SiCoordinates, SiName);
+    // });
+
+    // // 충청남도
     DoData.forEach((val) => {
       console.log(val);
       DoCoordinates = val.geometry.coordinates;
       DoName = val.properties.CTP_ENG_NM;
-      displayArea(DoCoordinates, DoName);
+      stateDisplayArea(
+        DoCoordinates,
+        DoName,
+        polygons,
+        map,
+        customOverlay,
+        draggable
+      );
     });
 
     function displayArea(coordinates, name, type) {
@@ -393,9 +417,9 @@ const Map = () => {
           point.y = coordinate[0];
           tempPoint.push(point);
           tempPath.push(new kakao.maps.LatLng(coordinate[1], coordinate[0]));
+          points.push(point);
         });
         path.push(tempPath);
-        points.push(tempPoint);
       });
 
       // 구역 경계 생성
@@ -471,7 +495,8 @@ const Map = () => {
           });
           return;
         }
-        let level = 10;
+        console.log(points);
+        let level = 12;
         map.setLevel(level, {
           anchor: centroid(points),
           animate: {
@@ -480,17 +505,17 @@ const Map = () => {
         });
 
         // 기존 폴리곤을 지우고 읍면동 폴리곤 생성
-        deletePolygon(polygons);
-        EmdData.forEach((val) => {
-          if (val.properties.sggnm === name) {
-            EmdCoordinates = val.geometry.coordinates;
-            EmdName = val.properties.sggnm;
-            displayArea(EmdCoordinates, EmdName, 'type');
-          }
-        });
-        createMarker(name);
+        // deletePolygon(polygons);
+        // EmdData.forEach((val) => {
+        //   if (val.properties.sggnm === name) {
+        //     EmdCoordinates = val.geometry.coordinates;
+        //     EmdName = val.properties.sggnm;
+        //     displayArea(EmdCoordinates, EmdName, 'type');
+        //   }
+        // });
+        // createMarker(name);
       });
-    }
+    } //
 
     function setCenter() {
       // 이동할 위도 경도 위치를 생성합니다
