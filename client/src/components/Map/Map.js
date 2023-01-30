@@ -19,11 +19,9 @@ import {
   PointInfoWrapper,
   InfoWrapper,
 } from './MapStyle';
-import {
-  centroid,
-  sideBtnAddEvent,
-  stateDisplayArea,
-} from './Function_map/kakaoMapApi';
+import { centroid, sideBtnAddEvent } from './Function_map/kakaoMapApi';
+
+import { stateDisplayArea } from './Function_map/displayArea';
 
 const Map = () => {
   const { kakao } = window;
@@ -91,6 +89,7 @@ const Map = () => {
     let DoData = koreaDo.features; // 해당 구역 이름, 좌표 등
     let DoCoordinates = []; // 좌표 저장
     let DoName = ''; // 행정구 이름
+    let DoKoName = '';
 
     // 시군구
     let data = geojson.features; // 해당 구역 이름, 좌표 등
@@ -109,6 +108,7 @@ const Map = () => {
 
     // 폴리곤 보관
     let polygons = [];
+    let liPolygons = [];
 
     /**
      * 초기값 false (화면 버튼을 눌러도 동작하지 않게 설정)
@@ -152,7 +152,7 @@ const Map = () => {
     const createContent = async (v) => {
       try {
         const searchMore = await searchCompany(v['업체명'], v['소재지']);
-        console.log('searchMore', searchMore);
+        // console.log('searchMore', searchMore);
         const content = searchMore
           ? `
             <div class='map-details-info'>
@@ -254,7 +254,7 @@ const Map = () => {
                   info[i].close();
                 }
               }
-              console.log('me: ', me);
+              // console.log('me: ', me);
               dispatch({
                 type: SAVE_DATA_REQUEST,
                 data: {
@@ -279,7 +279,7 @@ const Map = () => {
             // 마커에 클릭이벤트를 등록합니다
             kakao.maps.event.addListener(marker, 'click', async (event) => {
               if (info) {
-                console.log('info: ', info);
+                // console.log('info: ', info);
                 for (let i = 0; i < info.length; i++) {
                   info[i].close();
                 }
@@ -383,148 +383,46 @@ const Map = () => {
     // });
 
     // 시군구
-    SiData.forEach((val) => {
-      SiCoordinates = val.geometry.coordinates;
-      SiName = val.properties.SIG_KOR_NM;
-      let SigCd = val.properties.SIG_CD;
-      displayArea(SiCoordinates, SiName, SigCd);
-    });
-
-    // // 충청남도
-    // DoData.forEach((val) => {
-    //   console.log(val);
-    //   DoCoordinates = val.geometry.coordinates;
-    //   DoName = val.properties.CTP_ENG_NM;
-    //   stateDisplayArea(
-    //     DoCoordinates,
-    //     DoName,
-    //     polygons,
-    //     map,
-    //     customOverlay,
-    //     draggable
-    //   );
+    // SiData.forEach((val) => {
+    //   SiCoordinates = val.geometry.coordinates;
+    //   SiName = val.properties.SIG_KOR_NM;
+    //   let SigCd = val.properties.SIG_CD;
+    //   displayArea(SiCoordinates, SiName, SigCd);
     // });
 
-    function displayArea(coordinates, name, SigCd) {
-      let path = [];
-      let points = [];
+    const $mapControl = document.querySelector('#mapControl');
 
-      coordinates.forEach((v) => {
-        let tempPath = [];
-        let tempPoint = [];
-        v.forEach((coordinate) => {
-          let point = {};
-          point.x = coordinate[1];
-          point.y = coordinate[0];
-          tempPoint.push(point);
-          tempPath.push(new kakao.maps.LatLng(coordinate[1], coordinate[0]));
-          points.push(point);
-        });
-        path.push(tempPath);
-      });
-
-      // 구역 경계 생성
-      let polygon;
-      // if (!type) {
-      //   polygon = new kakao.maps.Polygon({
-      //     map: map,
-      //     path: path, // 그려질 다각형의 좌표 배열입니다
-      //     strokeWeight: 2, // 선의 두께입니다
-      //     strokeColor: '#004c80', // 선의 색깔입니다
-      //     strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-      //     strokeStyle: 'solid', // 선의 스타일입니다
-      //     fillColor: '#fff', // 채우기 색깔입니다
-      //     fillOpacity: 0.4, // 채우기 불투명도 입니다
-      //   });
-      // } else {
-      polygon = new kakao.maps.Polygon({
-        map: map,
-        path: path, // 그려질 다각형의 좌표 배열입니다
-        strokeWeight: 2, // 선의 두께입니다
-        strokeColor: '#004c80', // 선의 색깔입니다
-        strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-        strokeStyle: 'solid', // 선의 스타일입니다
-        fillColor: '#fff', // 채우기 색깔입니다
-        fillOpacity: 0.1, // 채우기 불투명도 입니다
-      });
-      // }
-      polygons.push(polygon);
-
-      // if (!type) {
-      //   // 다각형에 mouseover 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 변경합니다
-      //   // 지역명을 표시하는 커스텀오버레이를 지도위에 표시합니다
-      //   kakao.maps.event.addListener(
-      //     polygon,
-      //     'mouseover',
-      //     function (mouseEvent) {
-      //       polygon.setOptions({ fillColor: '#09f' });
-      //       draggable = false;
-      //       map.setDraggable(draggable);
-      //     }
-      //   );
-
-      //   // 다각형에 mousemove 이벤트를 등록하고 이벤트가 발생하면 커스텀 오버레이의 위치를 변경합니다
-      //   kakao.maps.event.addListener(
-      //     polygon,
-      //     'mousemove',
-      //     function (mouseEvent) {
-      //       customOverlay.setPosition(mouseEvent.latLng);
-      //     }
-      //   );
-
-      //   // 다각형에 mouseout 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 원래색으로 변경합니다
-      //   // 커스텀 오버레이를 지도에서 제거합니다
-      //   kakao.maps.event.addListener(polygon, 'mouseout', function () {
-      //     draggable = true;
-      //     map.setDraggable(draggable);
-
-      //     polygon.setOptions({ fillColor: '#fff' });
-      //     customOverlay.setMap(null);
-      //   });
-      // }
-      kakao.maps.event.addListener(polygon, 'click', function (mouseEvent) {
-        draggable = true;
-        map.setDraggable(draggable);
-        // if (type) {
-        //   console.log('test');
-        //   let level = 8;
-        //   map.setLevel(level, {
-        //     anchor: centroid(points),
-        //     animate: {
-        //       duration: 50, //확대 애니메이션 시간
-        //     },
-        //   });
-        //   return;
-        // }
-        console.log(name, ' : ', SigCd);
-        // let level = 12;
-        // map.setLevel(level, {
-        //   anchor: centroid(points),
-        //   animate: {
-        //     duration: 50, //확대 애니메이션 시간
-        //   },
-        // });
-
-        // 기존 폴리곤을 지우고 읍면동 폴리곤 생성
-        // deletePolygon(polygons);
-        // EmdData.forEach((val) => {
-        //   if (val.properties.sggnm === name) {
-        //     EmdCoordinates = val.geometry.coordinates;
-        //     EmdName = val.properties.sggnm;
-        //     displayArea(EmdCoordinates, EmdName, 'type');
-        //   }
-        // });
-        // createMarker(name);
-      });
-    } //
+    // // 충청남도
+    DoData.forEach((val) => {
+      // console.log(val);
+      DoCoordinates = val.geometry.coordinates;
+      DoName = val.properties.CTP_ENG_NM;
+      stateDisplayArea(
+        DoCoordinates,
+        DoName,
+        polygons,
+        map,
+        customOverlay,
+        draggable,
+        liPolygons
+      );
+    });
+    // $mapControl.removeChild();
+    // DoData.forEach((val) => {
+    //   DoKoName = val.properties.CTP_KOR_NM;
+    //   let div = document.createElement('button');
+    //   let text = document.createTextNode(DoKoName);
+    //   div.appendChild(text);
+    //   $mapControl.append(div);
+    // });
 
     function setCenter() {
       // 이동할 위도 경도 위치를 생성합니다
       var moveLatLon = new kakao.maps.LatLng(
-        36.545300108494835,
-        126.88998078116987
+        36.6017606568142,
+        127.80702241209042
       );
-      map.setLevel(11, {
+      map.setLevel(13, {
         animate: {
           duration: 50, //확대 애니메이션 시간
         },
@@ -537,12 +435,23 @@ const Map = () => {
     const $mapRerender = document.querySelector('#mapRerender');
     $mapRerender.addEventListener('mousedown', function () {
       setCenter();
+      deletePolygon(liPolygons);
       deletePolygon(polygons);
+
       if (lenSw) {
-        data.forEach((val) => {
-          coordinates = val.geometry.coordinates;
-          name = val.properties.SIG_KOR_NM;
-          displayArea(coordinates, name);
+        DoData.forEach((val) => {
+          console.log(val);
+          DoCoordinates = val.geometry.coordinates;
+          DoName = val.properties.CTP_ENG_NM;
+          stateDisplayArea(
+            DoCoordinates,
+            DoName,
+            polygons,
+            map,
+            customOverlay,
+            draggable,
+            liPolygons
+          );
         });
         deleteMarker();
         lenSw = false;
@@ -554,19 +463,6 @@ const Map = () => {
     // End 초기화
 
     // 폴리곤 클릭시 해당 지역으로 줌 하며, 생성되어 있는 폴리곤 제거한다.
-    sideBtnAddEvent(
-      map,
-      draggable,
-      EmdData,
-      deleteMarker,
-      deletePolygon,
-      polygons,
-      EmdCoordinates,
-      EmdName,
-      displayArea,
-      createMarker,
-      CnLocation
-    );
 
     // 선 생성 및 거리 측정
     // 출발지점 생성
@@ -616,7 +512,7 @@ const Map = () => {
     kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
       console.log('event: ', spFlag);
       if (spFlag) {
-        console.log('SpSet');
+        // console.log('SpSet');
 
         // 클릭한 위도, 경도 정보를 가져옵니다
         let latlng = mouseEvent.latLng;
@@ -647,7 +543,7 @@ const Map = () => {
         <div id='kakaoMap'></div>
         <ButtonWrapper>
           <button id='mapRerender'>화면</button>
-          <ButtonGroup code={'CN'} />
+          <ButtonWrapper id='mapControl'></ButtonWrapper>
         </ButtonWrapper>
       </MapWrapper>
       <InfoWrapper id='info'></InfoWrapper>

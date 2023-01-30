@@ -116,7 +116,7 @@ const JoinPage = () => {
    */
   const onSubmitForm = useCallback(
     (e) => {
-      console.log('submit data: ', gender, age);
+      // console.log('submit data: ', gender, age);
       e.preventDefault();
       dispatch({
         type: JOIN_REQUEST,

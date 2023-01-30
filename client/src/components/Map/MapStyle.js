@@ -40,13 +40,17 @@ export const MapWrapper = styled.div`
   }
 `;
 export const ButtonWrapper = styled.div`
+  #mapControl {
+    display: flex;
+    flex-direction: column;
+  }
   #group {
     display: flex;
     flex-direction: column;
   }
   button {
     font-family: Noto_Sans_Medium;
-
+    cursor: pointer;
     width: 100px;
     height: 31px;
     border: none;

@@ -8,7 +8,9 @@ const dotenv = require('dotenv');
 const { sequelize } = require('./models');
 const datasRouter = require('./routes/data');
 
+// 익스프레스 연동
 const app = express();
+
 dotenv.config();
 
 sequelize
