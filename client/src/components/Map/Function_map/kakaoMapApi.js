@@ -47,8 +47,7 @@ export const pointCentroid = (points) => {
   points.map((v) => {
     center.push(centroid(v));
   });
-  // console.log('center Array: ', center);
-  // console.log('center length: ', center.length);
+
   if (center.length > 1) {
     const pointCenter = [];
     // console.log('in if: ', centroid(center));
