@@ -50,17 +50,14 @@ export const pointCentroid = (points) => {
 
   if (center.length > 1) {
     const pointCenter = [];
-    // console.log('in if: ', centroid(center));
     pointCenter.push(centroid(center));
-    // console.log('pointCenter: ', pointCenter);
-    // return new kakao.maps.LatLng();
     let centerxy = new kakao.maps.LatLng(pointCenter[0].x, pointCenter[0].y);
-    // console.log('resutl test: ', centerxy);
+
     return centerxy;
   }
-  // console.log('center Result: ', center[0].x, center[0].y);
+
   let centeryx = new kakao.maps.LatLng(center[0].x, center[0].y);
-  // console.log('result test: ', centeryx);
+
   return centeryx;
 };
 
@@ -449,37 +446,4 @@ export const sideBtnAddEvent = (
     });
     createMarker('서천군');
   });
-  // 위 코드와 동일 동작을 원하나 동작 오류 수정 필요.
-  // let count = 0;
-  // function cn_move(code, i) {
-  //   const $code = document.querySelector(`.${code}_${i}`);
-  //   $code.addEventListener('click', function () {
-  //     deleteMarker();
-  //     draggable = true;
-  //     map.setDraggable(draggable);
-
-  //     var level = 10;
-  //     map.setLevel(level, {
-  //       anchor: new kakao.maps.LatLng(CnLocation[Object.keys(CNcity)[i]]),
-  //       animate: {
-  //         duration: 50, //확대 애니메이션 시간
-  //       },
-  //     });
-  //     let test = Object.keys(CNcity);
-
-  //     console.log('atb', test[i]);
-
-  //     deletePolygon(polygons);
-  //     createMarker(Object.keys(CNcity)[i]);
-  //   });
-  // }
-
-  // if (count < 15) {
-  //   for (let i = 0; i < Object.keys(CNcity).length; i++) {
-  //     console.log('for: ', i);
-  //     cn_move('CN', i);
-  //     count++;
-  //   }
-  // }
-  // End
 };
