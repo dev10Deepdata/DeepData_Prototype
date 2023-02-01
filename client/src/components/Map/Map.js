@@ -10,7 +10,11 @@ import koreaSi from '../../api/korea_si.json';
 import EupMyeonDong from '../../api/HJD.json';
 
 import ButtonGroup from '../ButtonGroup';
-import { CN_DATA_LOAD_REQUEST, SAVE_DATA_REQUEST } from '../../reducers/data';
+import {
+  CN_DATA_LOAD_REQUEST,
+  LOAD_WK_DATA_REQUEST,
+  SAVE_DATA_REQUEST,
+} from '../../reducers/data';
 import { dataSet, searchCompany } from './Function_data/dataRead';
 import {
   MapW,
@@ -53,26 +57,29 @@ const Map = () => {
   /**
    * 공공데이터포털의 openAPI에서 필요 데이터를 불러온 뒤, 도시별로 분류 하여 store에 저장한다.
    */
-  const fetchData = async () => {
-    try {
-      const request = await axios.get(process.env.REACT_APP_CHUNGNAM_API);
-      dataSet(request, CnDivision);
-      dispatch({
-        type: CN_DATA_LOAD_REQUEST,
-        data: { CnDivision },
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  // 데이터 분류
+  // const fetchData = async () => {
+  //   try {
+  //     const request = await axios.get(process.env.REACT_APP_CHUNGNAM_API);
+  //     dataSet(request, CnDivision);
+  //     dispatch({
+  //       type: CN_DATA_LOAD_REQUEST,
+  //       data: { CnDivision },
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  //cors error: server에서 요청 시도 해볼 것
   useEffect(() => {
-    if (flag) {
-      fetchData();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      flag = false;
-    }
-  }, [flag]);
+    const region = '44000';
+    dispatch({
+      type: LOAD_WK_DATA_REQUEST,
+      data: {
+        region,
+      },
+    });
+  }, []);
 
   // 카카오맵 셋팅
   useEffect(() => {
