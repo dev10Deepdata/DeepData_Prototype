@@ -123,3 +123,13 @@
 </div>
 
 <br>
+
+## History
+
+1. 워크넷 api 기업 정보 불러오기
+
+- 접근 시도
+  1. redux -> server -> store (fail)
+     카카오맵 api가 useEffect 내부에서 동작하므로 hoock 사용이 불가
+     외부에서 useSelector을 이용해 store의 데이터를 불러오면 카카오맵 자체가 리랜더링 되면서 원하는 동작을 구현하지 못함
+  2. 카카오맵 내부에서 axios를 이용해 직접적으로 서버를 접근하여 데이터 받음 (success)

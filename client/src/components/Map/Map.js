@@ -29,57 +29,11 @@ import { stateDisplayArea } from './Function_map/displayArea';
 
 const Map = () => {
   const { kakao } = window;
-  const { me } = useSelector((state) => state.data);
+  const { me, selectedState } = useSelector((state) => state.data);
   const dispatch = useDispatch();
 
   // 데이터를 불러오는 작업이 중복 되지 않게 하는 flag변수
   let flag = true;
-
-  // 도시별 분류를 위한 저장소
-  const CnDivision = {
-    asan: [],
-    cheonan: [],
-    yesan: [],
-    gongju: [],
-    gyeryong: [],
-    geumsan: [],
-    nonsan: [],
-    buyeo: [],
-    dangjin: [],
-    seosan: [],
-    taean: [],
-    hongseong: [],
-    cheongyang: [],
-    boryeong: [],
-    seocheon: [],
-  };
-
-  /**
-   * 공공데이터포털의 openAPI에서 필요 데이터를 불러온 뒤, 도시별로 분류 하여 store에 저장한다.
-   */
-  // const fetchData = async () => {
-  //   try {
-  //     const request = await axios.get(process.env.REACT_APP_CHUNGNAM_API);
-  //     dataSet(request, CnDivision);
-  //     dispatch({
-  //       type: CN_DATA_LOAD_REQUEST,
-  //       data: { CnDivision },
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  //cors error: server에서 요청 시도 해볼 것
-  useEffect(() => {
-    const region = '44000';
-    dispatch({
-      type: LOAD_WK_DATA_REQUEST,
-      data: {
-        region,
-      },
-    });
-  }, []);
 
   // 카카오맵 셋팅
   useEffect(() => {
@@ -243,134 +197,134 @@ const Map = () => {
      * 클릭한 폴리곤에 해당하는 지역의 기업을 마커로 표시한다.
      * @param {*} city
      */
-    const createMarker = (city) => {
-      CnDivision[CNcity[city]].map((v) => {
-        var geocoder = new kakao.maps.services.Geocoder();
-        geocoder.addressSearch(v['소재지'], function (result, status) {
-          // 정상적으로 검색이 완료됐으면
-          if (status === kakao.maps.services.Status.OK) {
-            var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+    // const createMarker = (city) => {
+    //   CnDivision[CNcity[city]].map((v) => {
+    //     var geocoder = new kakao.maps.services.Geocoder();
+    //     geocoder.addressSearch(v['소재지'], function (result, status) {
+    //       // 정상적으로 검색이 완료됐으면
+    //       if (status === kakao.maps.services.Status.OK) {
+    //         var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 
-            /**
-             * - 클릭한 기업을 DB에 저장 및 인적사항 연계
-             * - 열려있는 infoWindow를 close한다.
-             */
-            const onSaveLike = () => {
-              if (info) {
-                for (let i = 0; i < info.length; i++) {
-                  info[i].close();
-                }
-              }
-              // console.log('me: ', me);
-              dispatch({
-                type: SAVE_DATA_REQUEST,
-                data: {
-                  meId: me.id,
-                  do: '충청남도',
-                  si: v['소재지'].slice(0, 3),
-                  name: v['업체명'],
-                  address: v['소재지'],
-                  product: v['주생산품'],
-                },
-              });
-            };
+    //         /**
+    //          * - 클릭한 기업을 DB에 저장 및 인적사항 연계
+    //          * - 열려있는 infoWindow를 close한다.
+    //          */
+    //         const onSaveLike = () => {
+    //           if (info) {
+    //             for (let i = 0; i < info.length; i++) {
+    //               info[i].close();
+    //             }
+    //           }
+    //           // console.log('me: ', me);
+    //           dispatch({
+    //             type: SAVE_DATA_REQUEST,
+    //             data: {
+    //               meId: me.id,
+    //               do: '충청남도',
+    //               si: v['소재지'].slice(0, 3),
+    //               name: v['업체명'],
+    //               address: v['소재지'],
+    //               product: v['주생산품'],
+    //             },
+    //           });
+    //         };
 
-            // 결과값으로 받은 위치를 마커로 표시합니다
-            var marker = new kakao.maps.Marker({
-              map: map,
-              position: coords,
-            });
-            markers.push(marker);
-            map.setCenter(coords);
+    //         // 결과값으로 받은 위치를 마커로 표시합니다
+    //         var marker = new kakao.maps.Marker({
+    //           map: map,
+    //           position: coords,
+    //         });
+    //         markers.push(marker);
+    //         map.setCenter(coords);
 
-            // 마커에 클릭이벤트를 등록합니다
-            kakao.maps.event.addListener(marker, 'click', async (event) => {
-              if (info) {
-                // console.log('info: ', info);
-                for (let i = 0; i < info.length; i++) {
-                  info[i].close();
-                }
-              }
-              // 마커 위에 인포윈도우를 표시합니다
-              try {
-                const data = await createContent(v);
-                var iwContent = data,
-                  iwRemoveable = true;
+    //         // 마커에 클릭이벤트를 등록합니다
+    //         kakao.maps.event.addListener(marker, 'click', async (event) => {
+    //           if (info) {
+    //             // console.log('info: ', info);
+    //             for (let i = 0; i < info.length; i++) {
+    //               info[i].close();
+    //             }
+    //           }
+    //           // 마커 위에 인포윈도우를 표시합니다
+    //           try {
+    //             const data = await createContent(v);
+    //             var iwContent = data,
+    //               iwRemoveable = true;
 
-                // 인포윈도우를 생성합니다
-                var infowindow = new kakao.maps.InfoWindow({
-                  content: iwContent,
-                  removable: iwRemoveable,
-                });
-                info.push(infowindow);
-                infowindow.open(map, marker);
-                const infoBtn = document.querySelector('#btnClick');
-                infoBtn.onclick = onSaveLike;
+    //             // 인포윈도우를 생성합니다
+    //             var infowindow = new kakao.maps.InfoWindow({
+    //               content: iwContent,
+    //               removable: iwRemoveable,
+    //             });
+    //             info.push(infowindow);
+    //             infowindow.open(map, marker);
+    //             const infoBtn = document.querySelector('#btnClick');
+    //             infoBtn.onclick = onSaveLike;
 
-                // 목적지 지정 버튼 생성
-                const $infoBtnGroup = document.querySelector('#infoBtnGroup');
-                const endPointBtn = document.createElement('button');
-                endPointBtn.innerHTML = 'endPoint';
+    //             // 목적지 지정 버튼 생성
+    //             const $infoBtnGroup = document.querySelector('#infoBtnGroup');
+    //             const endPointBtn = document.createElement('button');
+    //             endPointBtn.innerHTML = 'endPoint';
 
-                /**
-                 * 목적지 지정 버튼 클릭시 동작
-                 */
-                function onClickDistance() {
-                  const endPointData = coords;
-                  // 출발지, 목적지 좌표 정의
-                  let linePath = [
-                    new kakao.maps.LatLng(
-                      startPointData['Ma'],
-                      startPointData['La']
-                    ),
-                    new kakao.maps.LatLng(
-                      endPointData['Ma'],
-                      endPointData['La']
-                    ),
-                  ];
+    //             /**
+    //              * 목적지 지정 버튼 클릭시 동작
+    //              */
+    //             function onClickDistance() {
+    //               const endPointData = coords;
+    //               // 출발지, 목적지 좌표 정의
+    //               let linePath = [
+    //                 new kakao.maps.LatLng(
+    //                   startPointData['Ma'],
+    //                   startPointData['La']
+    //                 ),
+    //                 new kakao.maps.LatLng(
+    //                   endPointData['Ma'],
+    //                   endPointData['La']
+    //                 ),
+    //               ];
 
-                  // 목적지 마커 생성
-                  EPmarker.setPosition(
-                    new kakao.maps.LatLng(
-                      endPointData['Ma'],
-                      endPointData['La']
-                    )
-                  );
-                  EPmarker.setMap(map);
+    //               // 목적지 마커 생성
+    //               EPmarker.setPosition(
+    //                 new kakao.maps.LatLng(
+    //                   endPointData['Ma'],
+    //                   endPointData['La']
+    //                 )
+    //               );
+    //               EPmarker.setMap(map);
 
-                  polyline.setPath(linePath);
+    //               polyline.setPath(linePath);
 
-                  console.log('길이: ' + Math.round(polyline.getLength()));
-                  const $lineDistance = document.querySelector('#lineDistance');
-                  $lineDistance.textContent = `출발지점 -> 목적지(${
-                    v['업체명']
-                  }): ${Math.round(polyline.getLength())}M`;
-                  polyline.setMap(map);
-                  infowindow.close();
-                  var level = 10;
-                  map.setLevel(level, {
-                    anchor: new kakao.maps.LatLng(
-                      endPointData['Ma'],
-                      endPointData['La']
-                    ),
-                    animate: {
-                      duration: 50, //확대 애니메이션 시간
-                    },
-                  });
-                  deleteMarker();
-                  deletePolygon(polygons);
-                }
-                endPointBtn.onclick = onClickDistance;
-                $infoBtnGroup.append(endPointBtn);
-              } catch (err) {
-                console.log(err);
-              }
-            });
-          }
-        });
-        return 0;
-      });
-    }; // end
+    //               console.log('길이: ' + Math.round(polyline.getLength()));
+    //               const $lineDistance = document.querySelector('#lineDistance');
+    //               $lineDistance.textContent = `출발지점 -> 목적지(${
+    //                 v['업체명']
+    //               }): ${Math.round(polyline.getLength())}M`;
+    //               polyline.setMap(map);
+    //               infowindow.close();
+    //               var level = 10;
+    //               map.setLevel(level, {
+    //                 anchor: new kakao.maps.LatLng(
+    //                   endPointData['Ma'],
+    //                   endPointData['La']
+    //                 ),
+    //                 animate: {
+    //                   duration: 50, //확대 애니메이션 시간
+    //                 },
+    //               });
+    //               deleteMarker();
+    //               deletePolygon(polygons);
+    //             }
+    //             endPointBtn.onclick = onClickDistance;
+    //             $infoBtnGroup.append(endPointBtn);
+    //           } catch (err) {
+    //             console.log(err);
+    //           }
+    //         });
+    //       }
+    //     });
+    //     return 0;
+    //   });
+    // }; // end
 
     /**
      * 생성되어 있는 마커를 모두 제거한다.
@@ -381,21 +335,6 @@ const Map = () => {
       }
       markers = [];
     };
-
-    // 시군구
-    // data.forEach((val) => {
-    //   coordinates = val.geometry.coordinates;
-    //   name = val.properties.SIG_KOR_NM;
-    //   displayArea(coordinates, name);
-    // });
-
-    // 시군구
-    // SiData.forEach((val) => {
-    //   SiCoordinates = val.geometry.coordinates;
-    //   SiName = val.properties.SIG_KOR_NM;
-    //   let SigCd = val.properties.SIG_CD;
-    //   displayArea(SiCoordinates, SiName, SigCd);
-    // });
 
     const $mapControl = document.querySelector('#mapControl');
 
@@ -411,7 +350,10 @@ const Map = () => {
         map,
         customOverlay,
         draggable,
-        liPolygons
+        liPolygons,
+        dispatch,
+        selectedState,
+        markers
       );
     });
     // $mapControl.removeChild();
@@ -447,7 +389,6 @@ const Map = () => {
 
       if (lenSw) {
         DoData.forEach((val) => {
-          console.log(val);
           DoCoordinates = val.geometry.coordinates;
           DoName = val.properties.CTP_ENG_NM;
           stateDisplayArea(
@@ -457,7 +398,8 @@ const Map = () => {
             map,
             customOverlay,
             draggable,
-            liPolygons
+            liPolygons,
+            dispatch
           );
         });
         deleteMarker();

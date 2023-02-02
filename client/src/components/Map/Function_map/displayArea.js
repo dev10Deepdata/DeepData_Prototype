@@ -1,6 +1,15 @@
 import koreaSi from '../../../api/korea_si.json';
+import cityCode from '../../../api/city.json';
+import axios from 'axios';
+
 import { deletePolygon, pointCentroid } from './kakaoMapApi';
 import HJD from '../../../api/HJDL.json';
+import {
+  LOAD_COMPANY_DATA_REQUEST,
+  LOAD_WK_DATA_REQUEST,
+} from '../../../reducers/data';
+import { createMarker } from './markerHandle';
+
 const { kakao } = window;
 
 export function stateDisplayArea(
@@ -10,7 +19,10 @@ export function stateDisplayArea(
   map,
   customOverlay,
   draggable,
-  liPolygons
+  liPolygons,
+  dispatch,
+  selectedState,
+  markers
 ) {
   let path = [];
   let points = [];
@@ -76,8 +88,16 @@ export function stateDisplayArea(
 
   kakao.maps.event.addListener(polygon, 'click', function (mouseEvent) {
     let level;
+    let region;
     switch (name) {
       case 'Gangwon-do':
+        // region = '42000';
+        // dispatch({
+        //   type: LOAD_WK_DATA_REQUEST,
+        //   data: {
+        //     region,
+        //   },
+        // });
         draggable = true;
         map.setDraggable(draggable);
         level = 11;
@@ -89,6 +109,13 @@ export function stateDisplayArea(
         });
         break;
       case 'Gyeonggi-do':
+        // region = '41000';
+        // dispatch({
+        //   type: LOAD_WK_DATA_REQUEST,
+        //   data: {
+        //     region,
+        //   },
+        // });
         draggable = true;
         map.setDraggable(draggable);
         level = 11;
@@ -100,6 +127,13 @@ export function stateDisplayArea(
         });
         break;
       case 'Gyeongsangnam-do':
+        // region = '48000';
+        // dispatch({
+        //   type: LOAD_WK_DATA_REQUEST,
+        //   data: {
+        //     region,
+        //   },
+        // });
         draggable = true;
         map.setDraggable(draggable);
         level = 11;
@@ -111,6 +145,13 @@ export function stateDisplayArea(
         });
         break;
       case 'Gyeongsangbuk-do':
+        // region = '47000';
+        // dispatch({
+        //   type: LOAD_WK_DATA_REQUEST,
+        //   data: {
+        //     region,
+        //   },
+        // });
         draggable = true;
         map.setDraggable(draggable);
         level = 11;
@@ -122,6 +163,13 @@ export function stateDisplayArea(
         });
         break;
       case 'Gwangju':
+        // region = '29000';
+        // dispatch({
+        //   type: LOAD_WK_DATA_REQUEST,
+        //   data: {
+        //     region,
+        //   },
+        // });
         draggable = true;
         map.setDraggable(draggable);
         level = 9;
@@ -133,6 +181,13 @@ export function stateDisplayArea(
         });
         break;
       case 'Daegu':
+        // region = '27000';
+        // dispatch({
+        //   type: LOAD_WK_DATA_REQUEST,
+        //   data: {
+        //     region,
+        //   },
+        // });
         draggable = true;
         map.setDraggable(draggable);
         level = 9;
@@ -144,6 +199,13 @@ export function stateDisplayArea(
         });
         break;
       case 'Daejeon':
+        // region = '30000';
+        // dispatch({
+        //   type: LOAD_WK_DATA_REQUEST,
+        //   data: {
+        //     region,
+        //   },
+        // });
         draggable = true;
         map.setDraggable(draggable);
         level = 9;
@@ -155,6 +217,13 @@ export function stateDisplayArea(
         });
         break;
       case 'Busan':
+        // region = '26000';
+        // dispatch({
+        //   type: LOAD_WK_DATA_REQUEST,
+        //   data: {
+        //     region,
+        //   },
+        // });
         draggable = true;
         map.setDraggable(draggable);
         level = 9;
@@ -166,6 +235,13 @@ export function stateDisplayArea(
         });
         break;
       case 'Seoul':
+        // region = '11000';
+        // dispatch({
+        //   type: LOAD_WK_DATA_REQUEST,
+        //   data: {
+        //     region,
+        //   },
+        // });
         draggable = true;
         map.setDraggable(draggable);
         level = 9;
@@ -177,6 +253,13 @@ export function stateDisplayArea(
         });
         break;
       case 'Sejong-si':
+        // region = '36110';
+        // dispatch({
+        //   type: LOAD_WK_DATA_REQUEST,
+        //   data: {
+        //     region,
+        //   },
+        // });
         draggable = true;
         map.setDraggable(draggable);
         level = 9;
@@ -188,6 +271,13 @@ export function stateDisplayArea(
         });
         break;
       case 'Ulsan':
+        // region = '31000';
+        // dispatch({
+        //   type: LOAD_WK_DATA_REQUEST,
+        //   data: {
+        //     region,
+        //   },
+        // });
         draggable = true;
         map.setDraggable(draggable);
         level = 9;
@@ -199,6 +289,13 @@ export function stateDisplayArea(
         });
         break;
       case 'Incheon':
+        // region = '28000';
+        // dispatch({
+        //   type: LOAD_WK_DATA_REQUEST,
+        //   data: {
+        //     region,
+        //   },
+        // });
         draggable = true;
         map.setDraggable(draggable);
         level = 10;
@@ -210,6 +307,13 @@ export function stateDisplayArea(
         });
         break;
       case 'Jellanam-do':
+        // region = '46000';
+        // dispatch({
+        //   type: LOAD_WK_DATA_REQUEST,
+        //   data: {
+        //     region,
+        //   },
+        // });
         draggable = true;
         map.setDraggable(draggable);
         level = 11;
@@ -221,6 +325,13 @@ export function stateDisplayArea(
         });
         break;
       case 'Jeollabuk-do':
+        // region = '45000';
+        // dispatch({
+        //   type: LOAD_WK_DATA_REQUEST,
+        //   data: {
+        //     region,
+        //   },
+        // });
         draggable = true;
         map.setDraggable(draggable);
         level = 11;
@@ -232,6 +343,13 @@ export function stateDisplayArea(
         });
         break;
       case 'Jeju-do':
+        // region = '50000';
+        // dispatch({
+        //   type: LOAD_WK_DATA_REQUEST,
+        //   data: {
+        //     region,
+        //   },
+        // });
         draggable = true;
         map.setDraggable(draggable);
         level = 10;
@@ -243,6 +361,13 @@ export function stateDisplayArea(
         });
         break;
       case 'Chungcheongnam-do':
+        // region = '44000';
+        // dispatch({
+        //   type: LOAD_WK_DATA_REQUEST,
+        //   data: {
+        //     region,
+        //   },
+        // });
         draggable = true;
         map.setDraggable(draggable);
         level = 11;
@@ -254,6 +379,13 @@ export function stateDisplayArea(
         });
         break;
       case 'Chungcheongbuk-do':
+        // region = '43000';
+        // dispatch({
+        //   type: LOAD_WK_DATA_REQUEST,
+        //   data: {
+        //     region,
+        //   },
+        // });
         draggable = true;
         map.setDraggable(draggable);
         level = 11;
@@ -267,6 +399,7 @@ export function stateDisplayArea(
       default:
         break;
     }
+
     deletePolygon(polygons);
     let selectCity = siData.filter((city) => city.properties.State === name);
     let cityCoordinates;
@@ -283,7 +416,10 @@ export function stateDisplayArea(
         map,
         customOverlay,
         draggable,
-        liPolygons
+        liPolygons,
+        dispatch,
+        selectedState,
+        markers
       );
     });
   });
@@ -297,11 +433,22 @@ export function cityDisplayArea(
   map,
   customOverlay,
   draggable,
-  liPolygons
+  liPolygons,
+  dispatch,
+  selectedState,
+  markers
 ) {
   let path = [];
   let points = [];
+  console.log('name: ', name, ' state: ', state);
 
+  // code 추출
+  let code;
+  cityCode.cityCode.map((v) =>
+    v.city_ko.indexOf(name) !== -1 ? (code = v.code) : ''
+  );
+
+  // console.log('code: ', code);
   coordinates.forEach((v) => {
     let tempPath = [];
     let tempPoint = [];
@@ -356,7 +503,7 @@ export function cityDisplayArea(
 
   const centerCoor = pointCentroid(points);
 
-  kakao.maps.event.addListener(polygon, 'click', function (mouseEvent) {
+  kakao.maps.event.addListener(polygon, 'click', async function (mouseEvent) {
     draggable = true;
     map.setDraggable(draggable);
 
@@ -390,10 +537,24 @@ export function cityDisplayArea(
     });
     console.log('polygons', polygons);
     polygons.map((v) => {
-      v.setOptions({ fillOpacity: 0.1 });
-      // v.Eb[0]['strokeWeight'] = 1;
-      // v.Eb[0]['fillOpacity'] = 0.1;
+      v.setOptions({
+        strokeColor: '#e2e2e2',
+        strokeOpacity: 0.7,
+        fillOpacity: 0.1,
+      });
     });
+
+    try {
+      let region = code;
+      const result = await axios.get(
+        `http://localhost:3066/data/loadwk/${region}`,
+        region
+      );
+      console.log(result);
+      createMarker(result.data, map, markers);
+    } catch (err) {
+      console.log(err);
+    }
   });
 }
 
@@ -429,11 +590,11 @@ export function townDisplayArea(
   polygon = new kakao.maps.Polygon({
     map: map,
     path: path, // 그려질 다각형의 좌표 배열입니다
-    strokeWeight: 1, // 선의 두께입니다
-    strokeColor: '#808080', // 선의 색깔입니다
-    strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+    strokeWeight: 2, // 선의 두께입니다
+    strokeColor: '#54B435', // 선의 색깔입니다
+    strokeOpacity: 0.9, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
     strokeStyle: 'solid', // 선의 스타일입니다
-    fillColor: '#39B5E0', // 채우기 색깔입니다
+    fillColor: '#CDE990', // 채우기 색깔입니다
     fillOpacity: 0.2, // 채우기 불투명도 입니다
   });
 
