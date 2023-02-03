@@ -1,21 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import axios from 'axios';
 
-import { CNcity, CnLocation } from '../../api/chungnam';
 import geojson from '../../api/TL_SCCO_SIG.json';
 import koreaDo from '../../api/korea_do_data.json';
 import koreaSi from '../../api/korea_si.json';
 
 import EupMyeonDong from '../../api/HJD.json';
 
-import ButtonGroup from '../ButtonGroup';
-import {
-  CN_DATA_LOAD_REQUEST,
-  LOAD_WK_DATA_REQUEST,
-  SAVE_DATA_REQUEST,
-} from '../../reducers/data';
-import { dataSet, searchCompany } from './Function_data/dataRead';
 import {
   MapW,
   MapWrapper,
@@ -23,20 +14,31 @@ import {
   PointInfoWrapper,
   InfoWrapper,
 } from './MapStyle';
-import { centroid, sideBtnAddEvent } from './Function_map/kakaoMapApi';
 
 import { stateDisplayArea } from './Function_map/displayArea';
+import { deleteMarker } from './Function_map/markerHandle';
+import { useState } from 'react/cjs/react.production.min';
 
 const Map = () => {
   const { kakao } = window;
   const { me, selectedState } = useSelector((state) => state.data);
   const dispatch = useDispatch();
 
+  // const [krMap, setKrMap] = useState(); // 카카오맵 저장
+
   // 데이터를 불러오는 작업이 중복 되지 않게 하는 flag변수
   let flag = true;
 
+  console.log('1.map render');
+
+  // // 카카오맵 초기 셋팅
+  // useEffect(()=>{
+
+  // },[])
+
   // 카카오맵 셋팅
   useEffect(() => {
+    console.log('Map.js/useEffect()');
     const container = document.getElementById('kakaoMap');
     const options = {
       center: new kakao.maps.LatLng(36.6017606568142, 127.80702241209042),
@@ -105,242 +107,8 @@ const Map = () => {
     let markers = []; // 생선된 마커를 담는다.
     let info = []; // 생성된 infoWindow를 담는다.
 
-    /**
-     * 정보에 따른 콘텐츠 내용 정의
-     * @param {object} v
-     * @returns
-     */
-    const createContent = async (v) => {
-      try {
-        const searchMore = await searchCompany(v['업체명'], v['소재지']);
-        // console.log('searchMore', searchMore);
-        const content = searchMore
-          ? `
-            <div class='map-details-info'>
-              <div id="infoBtnGroup">
-                <button id="btnClick">Interest</button>
-                <a href="https://www.google.com/search?q=${v['업체명']}" target="_blank" >
-                  <button id="btnClick">Search</button>
-                </a>
-              </div>
-              <table>
-                <tr>
-                  <td>업체명</td>
-                  <td>${v['업체명']}</td>
-                </tr>
-                <tr>
-                  <td>영문</td>
-                  <td>${searchMore['corpEnsnNm']}</td>
-                </tr>
-                <tr>
-                  <td>대표자</td>
-                  <td>${searchMore['enpRprFnm']}</td>
-                </tr>
-                <tr>
-                  <td>전화번호</td>
-                  <td>${searchMore['enpTlno']}</td>
-                </tr>
-                <tr>
-                  <td>소재지</td>
-                  <td>${v['소재지']}</td>
-                </tr>
-                <tr>
-                  <td>주생산품</td>
-                  <td>${v['주생산품']}</td>
-                </tr>
-                <tr>
-                  <td>법인등록번호</td>
-                  <td>${searchMore['crno']}</td>
-                </tr>
-                <tr>
-                  <td>사업자등록번호</td>
-                  <td>${searchMore['bzno']}</td>
-                </tr>
-                <tr>
-                  <td>기업설립일자</td>
-                  <td>${searchMore['enpEstbDt']}</td>
-                </tr>
-              </table>
-            </div>
-            `
-          : `
-              <div class="map-info">
-                <div id="infoBtnGroup">
-                  <button id="btnClick">Interest</button>
-                  <a href="https://www.google.com/search?q=${v['업체명']}" target="_blank" >
-                    <button id="btnClick">Search</button>
-                  </a>
-                </div>
-                <table>
-                  <tr>
-                    <td>업체명</td>
-                    <td>${v['업체명']}</td>
-                  </tr>
-                  <tr>
-                    <td>소재지</td>
-                    <td>${v['소재지']}</td>
-                  </tr>
-                  <tr>
-                    <td>주생산품</td>
-                    <td>${v['주생산품']}</td>
-                  </tr>
-                </table>
-              </div>
-              `;
-        return content;
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    /**
-     * 클릭한 폴리곤에 해당하는 지역의 기업을 마커로 표시한다.
-     * @param {*} city
-     */
-    // const createMarker = (city) => {
-    //   CnDivision[CNcity[city]].map((v) => {
-    //     var geocoder = new kakao.maps.services.Geocoder();
-    //     geocoder.addressSearch(v['소재지'], function (result, status) {
-    //       // 정상적으로 검색이 완료됐으면
-    //       if (status === kakao.maps.services.Status.OK) {
-    //         var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-
-    //         /**
-    //          * - 클릭한 기업을 DB에 저장 및 인적사항 연계
-    //          * - 열려있는 infoWindow를 close한다.
-    //          */
-    //         const onSaveLike = () => {
-    //           if (info) {
-    //             for (let i = 0; i < info.length; i++) {
-    //               info[i].close();
-    //             }
-    //           }
-    //           // console.log('me: ', me);
-    //           dispatch({
-    //             type: SAVE_DATA_REQUEST,
-    //             data: {
-    //               meId: me.id,
-    //               do: '충청남도',
-    //               si: v['소재지'].slice(0, 3),
-    //               name: v['업체명'],
-    //               address: v['소재지'],
-    //               product: v['주생산품'],
-    //             },
-    //           });
-    //         };
-
-    //         // 결과값으로 받은 위치를 마커로 표시합니다
-    //         var marker = new kakao.maps.Marker({
-    //           map: map,
-    //           position: coords,
-    //         });
-    //         markers.push(marker);
-    //         map.setCenter(coords);
-
-    //         // 마커에 클릭이벤트를 등록합니다
-    //         kakao.maps.event.addListener(marker, 'click', async (event) => {
-    //           if (info) {
-    //             // console.log('info: ', info);
-    //             for (let i = 0; i < info.length; i++) {
-    //               info[i].close();
-    //             }
-    //           }
-    //           // 마커 위에 인포윈도우를 표시합니다
-    //           try {
-    //             const data = await createContent(v);
-    //             var iwContent = data,
-    //               iwRemoveable = true;
-
-    //             // 인포윈도우를 생성합니다
-    //             var infowindow = new kakao.maps.InfoWindow({
-    //               content: iwContent,
-    //               removable: iwRemoveable,
-    //             });
-    //             info.push(infowindow);
-    //             infowindow.open(map, marker);
-    //             const infoBtn = document.querySelector('#btnClick');
-    //             infoBtn.onclick = onSaveLike;
-
-    //             // 목적지 지정 버튼 생성
-    //             const $infoBtnGroup = document.querySelector('#infoBtnGroup');
-    //             const endPointBtn = document.createElement('button');
-    //             endPointBtn.innerHTML = 'endPoint';
-
-    //             /**
-    //              * 목적지 지정 버튼 클릭시 동작
-    //              */
-    //             function onClickDistance() {
-    //               const endPointData = coords;
-    //               // 출발지, 목적지 좌표 정의
-    //               let linePath = [
-    //                 new kakao.maps.LatLng(
-    //                   startPointData['Ma'],
-    //                   startPointData['La']
-    //                 ),
-    //                 new kakao.maps.LatLng(
-    //                   endPointData['Ma'],
-    //                   endPointData['La']
-    //                 ),
-    //               ];
-
-    //               // 목적지 마커 생성
-    //               EPmarker.setPosition(
-    //                 new kakao.maps.LatLng(
-    //                   endPointData['Ma'],
-    //                   endPointData['La']
-    //                 )
-    //               );
-    //               EPmarker.setMap(map);
-
-    //               polyline.setPath(linePath);
-
-    //               console.log('길이: ' + Math.round(polyline.getLength()));
-    //               const $lineDistance = document.querySelector('#lineDistance');
-    //               $lineDistance.textContent = `출발지점 -> 목적지(${
-    //                 v['업체명']
-    //               }): ${Math.round(polyline.getLength())}M`;
-    //               polyline.setMap(map);
-    //               infowindow.close();
-    //               var level = 10;
-    //               map.setLevel(level, {
-    //                 anchor: new kakao.maps.LatLng(
-    //                   endPointData['Ma'],
-    //                   endPointData['La']
-    //                 ),
-    //                 animate: {
-    //                   duration: 50, //확대 애니메이션 시간
-    //                 },
-    //               });
-    //               deleteMarker();
-    //               deletePolygon(polygons);
-    //             }
-    //             endPointBtn.onclick = onClickDistance;
-    //             $infoBtnGroup.append(endPointBtn);
-    //           } catch (err) {
-    //             console.log(err);
-    //           }
-    //         });
-    //       }
-    //     });
-    //     return 0;
-    //   });
-    // }; // end
-
-    /**
-     * 생성되어 있는 마커를 모두 제거한다.
-     */
-    const deleteMarker = () => {
-      for (let i = 0; i < markers.length; i++) {
-        markers[i].setMap(null);
-      }
-      markers = [];
-    };
-
-    const $mapControl = document.querySelector('#mapControl');
-
     // // 충청남도
     DoData.forEach((val) => {
-      // console.log(val);
       DoCoordinates = val.geometry.coordinates;
       DoName = val.properties.CTP_ENG_NM;
       stateDisplayArea(
@@ -353,17 +121,10 @@ const Map = () => {
         liPolygons,
         dispatch,
         selectedState,
-        markers
+        markers,
+        info
       );
     });
-    // $mapControl.removeChild();
-    // DoData.forEach((val) => {
-    //   DoKoName = val.properties.CTP_KOR_NM;
-    //   let div = document.createElement('button');
-    //   let text = document.createTextNode(DoKoName);
-    //   div.appendChild(text);
-    //   $mapControl.append(div);
-    // });
 
     function setCenter() {
       // 이동할 위도 경도 위치를 생성합니다
@@ -402,7 +163,7 @@ const Map = () => {
             dispatch
           );
         });
-        deleteMarker();
+        deleteMarker(markers);
         lenSw = false;
       }
     });

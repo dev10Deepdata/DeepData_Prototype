@@ -22,7 +22,8 @@ export function stateDisplayArea(
   liPolygons,
   dispatch,
   selectedState,
-  markers
+  markers,
+  info
 ) {
   let path = [];
   let points = [];
@@ -40,8 +41,7 @@ export function stateDisplayArea(
     points.push(tempPoint);
     path.push(tempPath);
   });
-  // console.log(name);
-  // // console.log('point: ', points);
+
   // pointCentroid(points);
   // 구역 경계 생성
   let polygon;
@@ -419,7 +419,8 @@ export function stateDisplayArea(
         liPolygons,
         dispatch,
         selectedState,
-        markers
+        markers,
+        info
       );
     });
   });
@@ -436,7 +437,8 @@ export function cityDisplayArea(
   liPolygons,
   dispatch,
   selectedState,
-  markers
+  markers,
+  info
 ) {
   let path = [];
   let points = [];
@@ -448,7 +450,6 @@ export function cityDisplayArea(
     v.city_ko.indexOf(name) !== -1 ? (code = v.code) : ''
   );
 
-  // console.log('code: ', code);
   coordinates.forEach((v) => {
     let tempPath = [];
     let tempPoint = [];
@@ -511,7 +512,6 @@ export function cityDisplayArea(
     setCenter(map, centerCoor);
     let HjdData = HJD.features;
 
-    // console.log(HjdData[0].properties.sggnm);
     let HjdCoordinates = [];
     let HjdName = '';
 
@@ -519,11 +519,8 @@ export function cityDisplayArea(
     deletePolygon(liPolygons);
 
     HjdData.forEach((val) => {
-      // console.log(val.properties['sggnm']);
       if (val.properties['sggnm'] === name) {
-        // console.log('ok');
         HjdCoordinates = val.geometry.coordinates[0];
-        // console.log(HjdCoordinates);
         HjdName = val.properties['sggnm'];
         townDisplayArea(
           HjdCoordinates,
@@ -552,7 +549,9 @@ export function cityDisplayArea(
       );
       console.log(result);
       deleteMarker(markers);
-      createMarker(result.data, map, markers);
+      if (result.data.length > 0) {
+        createMarker(result.data, map, markers, name,info);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -585,8 +584,6 @@ export function townDisplayArea(
   });
   // 구역 경계 생성
   let polygon;
-
-  // console.log(path);
 
   polygon = new kakao.maps.Polygon({
     map: map,

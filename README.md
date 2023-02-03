@@ -167,3 +167,5 @@ ERROR in [eslint] package.json:
 npm uninstall react-scripts
 npm install react-scripts
 ```
+
+3. 카카오맵 컴포넌트 분리
