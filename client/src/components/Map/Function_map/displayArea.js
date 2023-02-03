@@ -508,8 +508,6 @@ export function cityDisplayArea(
     draggable = true;
     map.setDraggable(draggable);
 
-    setCenter(map, centerCoor);
-    setCenter(map, centerCoor);
     let HjdData = HJD.features;
 
     let HjdCoordinates = [];
@@ -517,6 +515,8 @@ export function cityDisplayArea(
 
     console.log('displayArea', typeof liPolygons);
     deletePolygon(liPolygons);
+
+    setCityCenter(map, centerCoor);
 
     HjdData.forEach((val) => {
       if (val.properties['sggnm'] === name) {
@@ -550,7 +550,7 @@ export function cityDisplayArea(
       console.log(result);
       deleteMarker(markers);
       if (result.data.length > 0) {
-        createMarker(result.data, map, markers, name,info);
+        createMarker(result.data, map, markers, name, info);
       }
     } catch (err) {
       console.log(err);
@@ -599,11 +599,11 @@ export function townDisplayArea(
   liPolygons.push(polygon);
 }
 
-function setCenter(map, coor) {
+function setCityCenter(map, coor) {
   map.setLevel(10, {
-    animate: {
-      duration: 50, //확대 애니메이션 시간
-    },
+    // animate: {
+    //   duration: 50, //확대 애니메이션 시간
+    // },
   });
   map.setCenter(coor);
 }

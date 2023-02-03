@@ -168,4 +168,17 @@ npm uninstall react-scripts
 npm install react-scripts
 ```
 
-3. 카카오맵 컴포넌트 분리
+3. 카카오맵 좌표 이동 첫 클릭시 지정된 좌표 까지 도달 하지 못하고 멈추는 문제점 발견 \_ 첫 클릭 이후에는 정상 작동
+
+기존 코드
+``` 
+  map.setLevel(10, {
+     animate: {
+       duration: 50, //확대 애니메이션 시간
+    },
+  });
+  map.setCenter(coor);
+```
+
+발견: 레벨을 확대하는 동작과 좌표로 이동하는 동작이 충돌하며 문제 발생
+1차 해결 애니메이션 제거

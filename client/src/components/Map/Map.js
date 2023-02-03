@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import geojson from '../../api/TL_SCCO_SIG.json';
@@ -17,80 +17,85 @@ import {
 
 import { stateDisplayArea } from './Function_map/displayArea';
 import { deleteMarker } from './Function_map/markerHandle';
-import { useState } from 'react/cjs/react.production.min';
 
 const Map = () => {
   const { kakao } = window;
   const { me, selectedState } = useSelector((state) => state.data);
   const dispatch = useDispatch();
 
-  // const [krMap, setKrMap] = useState(); // 카카오맵 저장
+  const [krMap, setKrMap] = useState(); // 카카오맵 저장
+  const [customOverlay, setCustomOverlay] = useState(); // 카카오맵 저장
+
+  // 도, 특별시, 광역시
+  let DoData = koreaDo.features; // 해당 구역 이름, 좌표 등
+  let DoCoordinates = []; // 좌표 저장
+  let DoName = ''; // 행정구 이름
+  let DoKoName = '';
+
+  // 시군구
+  let data = geojson.features; // 해당 구역 이름, 좌표 등
+  let coordinates = []; // 좌표 저장
+  let name = ''; // 행정구 이름
+
+  // 시군구
+  let SiData = koreaSi.features; // 해당 구역 이름, 좌표 등
+  let SiCoordinates = []; // 좌표 저장
+  let SiName = ''; // 행정구 이름
+
+  // 읍면동
+  let EmdData = EupMyeonDong.features; // 해당 구역 이름, 좌표 등
+  let EmdCoordinates = []; // 좌표 저장
+  let EmdName = ''; // 읍면동 이름
+
+  // 폴리곤 보관
+  let polygons = [];
+  let liPolygons = [];
+
+  /**
+   * 초기값 false (화면 버튼을 눌러도 동작하지 않게 설정)
+   * 폴리곤 클릭시 true로 변경하여 화면 버튼을 활성화
+   * 화면 버튼 클릭시 false로 스위치
+   */
+  let lenSw = false;
 
   // 데이터를 불러오는 작업이 중복 되지 않게 하는 flag변수
   let flag = true;
 
+  // 폴리곤 내에서 드래그를 막고자 하는 변수
+  let draggable = true;
+
+  let markers = []; // 생선된 마커를 담는다.
+  let info = []; // 생성된 infoWindow를 담는다.
+
   console.log('1.map render');
 
-  // // 카카오맵 초기 셋팅
-  // useEffect(()=>{
-
-  // },[])
-
-  // 카카오맵 셋팅
+  // 카카오맵 초기 셋팅
   useEffect(() => {
-    console.log('Map.js/useEffect()');
+    console.log('Map.js/useEffect(1)');
     const container = document.getElementById('kakaoMap');
     const options = {
       center: new kakao.maps.LatLng(36.6017606568142, 127.80702241209042),
       level: 13,
     };
-    const map = new kakao.maps.Map(container, options);
+    setKrMap(new kakao.maps.Map(container, options));
+    setCustomOverlay(new kakao.maps.CustomOverlay({}));
+  }, []);
 
-    const customOverlay = new kakao.maps.CustomOverlay({});
-
-    // 도, 특별시, 광역시
-    let DoData = koreaDo.features; // 해당 구역 이름, 좌표 등
-    let DoCoordinates = []; // 좌표 저장
-    let DoName = ''; // 행정구 이름
-    let DoKoName = '';
-
-    // 시군구
-    let data = geojson.features; // 해당 구역 이름, 좌표 등
-    let coordinates = []; // 좌표 저장
-    let name = ''; // 행정구 이름
-
-    // 시군구
-    let SiData = koreaSi.features; // 해당 구역 이름, 좌표 등
-    let SiCoordinates = []; // 좌표 저장
-    let SiName = ''; // 행정구 이름
-
-    // 읍면동
-    let EmdData = EupMyeonDong.features; // 해당 구역 이름, 좌표 등
-    let EmdCoordinates = []; // 좌표 저장
-    let EmdName = ''; // 읍면동 이름
-
-    // 폴리곤 보관
-    let polygons = [];
-    let liPolygons = [];
-
-    /**
-     * 초기값 false (화면 버튼을 눌러도 동작하지 않게 설정)
-     * 폴리곤 클릭시 true로 변경하여 화면 버튼을 활성화
-     * 화면 버튼 클릭시 false로 스위치
-     */
-    let lenSw = false;
+  // 카카오맵 셋팅
+  useEffect(() => {
+    console.log(krMap);
+    if (!krMap) {
+      return;
+    }
 
     // 출발지점 - 목적지점 line
     let polyline = new kakao.maps.Polyline({
-      map: map,
+      map: krMap,
       strokeWeight: 5,
       strokeColor: '#FF00FF',
       strokeOpacity: 0.8,
       strokeStyle: 'solid',
     });
-
-    // 폴리곤 내에서 드래그를 막고자 하는 변수
-    let draggable = true;
 
     /**
      * 폴리곤을 클릭시 생성된 폴리곤을 모두 지우는 함수.
@@ -104,10 +109,7 @@ const Map = () => {
       lenSw = true;
     };
 
-    let markers = []; // 생선된 마커를 담는다.
-    let info = []; // 생성된 infoWindow를 담는다.
-
-    // // 충청남도
+    // 도 새성
     DoData.forEach((val) => {
       DoCoordinates = val.geometry.coordinates;
       DoName = val.properties.CTP_ENG_NM;
@@ -115,7 +117,7 @@ const Map = () => {
         DoCoordinates,
         DoName,
         polygons,
-        map,
+        krMap,
         customOverlay,
         draggable,
         liPolygons,
@@ -132,18 +134,14 @@ const Map = () => {
         36.6017606568142,
         127.80702241209042
       );
-      map.setLevel(13, {
-        animate: {
-          duration: 50, //확대 애니메이션 시간
-        },
-      });
+      krMap.setLevel(13);
       // 지도 중심을 이동 시킵니다
-      map.setCenter(moveLatLon);
+      krMap.setCenter(moveLatLon);
     }
 
     // 화면을 초기 값으로 초기화 한다.
     const $mapRerender = document.querySelector('#mapRerender');
-    $mapRerender.addEventListener('mousedown', function () {
+    $mapRerender.addEventListener('click', function () {
       setCenter();
       deletePolygon(liPolygons);
       deletePolygon(polygons);
@@ -156,11 +154,14 @@ const Map = () => {
             DoCoordinates,
             DoName,
             polygons,
-            map,
+            krMap,
             customOverlay,
             draggable,
             liPolygons,
-            dispatch
+            dispatch,
+            selectedState,
+            markers,
+            info
           );
         });
         deleteMarker(markers);
@@ -186,8 +187,8 @@ const Map = () => {
       imageOption
     );
     // 마커 정의
-    let SPmarker = new kakao.maps.Marker({ map: map, image: markerImage });
-    let EPmarker = new kakao.maps.Marker({ map: map, image: markerImage });
+    let SPmarker = new kakao.maps.Marker({ map: krMap, image: markerImage });
+    let EPmarker = new kakao.maps.Marker({ map: krMap, image: markerImage });
 
     const $startPoint = document.querySelector('#startPoint');
     const $removePoint = document.querySelector('#removePoint');
@@ -219,7 +220,7 @@ const Map = () => {
       EPmarker.setMap(null);
     }
 
-    kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
+    kakao.maps.event.addListener(krMap, 'click', function (mouseEvent) {
       console.log('event: ', spFlag);
       if (spFlag) {
         // console.log('SpSet');
@@ -230,11 +231,11 @@ const Map = () => {
 
         // // 마커 위치를 클릭한 위치로 옮깁니다
         SPmarker.setPosition(latlng);
-        SPmarker.setMap(map);
+        SPmarker.setMap(krMap);
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [krMap]);
 
   return (
     <MapW>
