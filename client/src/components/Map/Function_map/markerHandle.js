@@ -9,7 +9,7 @@ export const createMarker = (city, map, markers) => {
       let cutstr = address.split(',');
       address = cutstr[0];
     }
-    console.log(address);
+    console.log('address: ', address);
     let geocoder = new kakao.maps.services.Geocoder();
 
     geocoder.addressSearch(address, function (result, status) {
@@ -252,9 +252,12 @@ export const createMarker = (city, map, markers) => {
 /**
  * 생성되어 있는 마커를 모두 제거한다.
  */
-// const deleteMarker = () => {
-//   for (let i = 0; i < markers.length; i++) {
-//     markers[i].setMap(null);
-//   }
-//   markers = [];
-// };
+export const deleteMarker = (markers) => {
+  if (!markers) {
+    return;
+  }
+  for (let i = 0; i < markers.length; i++) {
+    markers[i].setMap(null);
+  }
+  markers = [];
+};

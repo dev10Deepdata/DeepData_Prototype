@@ -133,3 +133,37 @@
      카카오맵 api가 useEffect 내부에서 동작하므로 hoock 사용이 불가
      외부에서 useSelector을 이용해 store의 데이터를 불러오면 카카오맵 자체가 리랜더링 되면서 원하는 동작을 구현하지 못함
   2. 카카오맵 내부에서 axios를 이용해 직접적으로 서버를 접근하여 데이터 받음 (success)
+
+2. ' npm run eject' 하여 CRA의 숨김 파일을 해제 하여 생긴 에러 해결
+
+```
+Parsing error: [BABEL] /Users/jochanho/Desktop/DeepData/deepdata_prototype/client/src/reducers/data.js: Using `babel-preset-react-app` requires that you specify `NODE_ENV` or `BABEL_ENV` environment variables. Valid values are "development", "test", and "production". Instead, received: undefined. (While processing: "/Users/jochanho/Desktop/DeepData/deepdata_prototype/client/node_modules/babel-preset-react-app/index.js")eslint
+```
+
+- package.json 의 eslintConfig에 아래 코드 추가
+
+```
+"eslintConfig": {
+    "env": {
+      "NODE_ENV": "development"
+    },
+   ...more code
+  },
+```
+
+- 코드에서 에러는 사라졌으나 프로그램 실행시 에러 발생
+
+```
+ERROR in [eslint] package.json:
+        Environment key "NODE_ENV" is unknown
+```
+
+- https://stackoverflow.com/questions/11928013/node-env-is-not-recognized-as-an-internal-or-external-command-operable-comman
+
+- 폴더 구조를 위해 git checkout -f 를 하여 원복
+- 다시 npm run eject를 하기 위해서는
+
+```
+npm uninstall react-scripts
+npm install react-scripts
+```

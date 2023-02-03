@@ -8,7 +8,7 @@ import {
   LOAD_COMPANY_DATA_REQUEST,
   LOAD_WK_DATA_REQUEST,
 } from '../../../reducers/data';
-import { createMarker } from './markerHandle';
+import { createMarker, deleteMarker } from './markerHandle';
 
 const { kakao } = window;
 
@@ -551,6 +551,7 @@ export function cityDisplayArea(
         region
       );
       console.log(result);
+      deleteMarker(markers);
       createMarker(result.data, map, markers);
     } catch (err) {
       console.log(err);

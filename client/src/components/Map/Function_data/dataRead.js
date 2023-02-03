@@ -32,35 +32,35 @@ export function removeParentheses(s) {
   return item;
 }
 
-   /**
-     * 기업정보 검색
-     * @param {string} company
-     * @param {string} address
-     * @returns
-     */
-    export const searchCompany = async (company, address) => {
-      try {
-        console.log('search company: ', company);
-        let newCompany = company;
-        console.log('search newCompany: ', newCompany);
-        const check = company.indexOf('㈜');
-        if (check !== -1) {
-          console.log('(주) 있음.');
-          const test = newCompany.replace('㈜', '');
-          newCompany = test;
-          console.log('(주)제거: ', newCompany);
-        }
-        const search = await axios.get(
-          process.env.REACT_APP_SEARCH_API + `${newCompany}`
-        );
-        //
-        console.log('search: ', search.data.response.body.items.item);
-        const item = search.data.response.body.items.item.find((v) => {
-          const sItem = removeParentheses(v.enpBsadr.replace('충청남도 ', ''));
-          return sItem.replace(/ /g, '') === address.replace(/ /g, '');
-        });
-        return item;
-      } catch (error) {
-        console.log(error);
-      }
-    };
+/**
+ * 기업정보 검색
+ * @param {string} company
+ * @param {string} address
+ * @returns
+ */
+export const searchCompany = async (company, address) => {
+  try {
+    console.log('search company: ', company);
+    let newCompany = company;
+    console.log('search newCompany: ', newCompany);
+    const check = company.indexOf('㈜');
+    if (check !== -1) {
+      console.log('(주) 있음.');
+      const test = newCompany.replace('㈜', '');
+      newCompany = test;
+      console.log('(주)제거: ', newCompany);
+    }
+    const search = await axios.get(
+      process.env.REACT_APP_SEARCH_API + `${newCompany}`
+    );
+    //
+    console.log('search: ', search.data.response.body.items.item);
+    const item = search.data.response.body.items.item.find((v) => {
+      const sItem = removeParentheses(v.enpBsadr.replace('충청남도 ', ''));
+      return sItem.replace(/ /g, '') === address.replace(/ /g, '');
+    });
+    return item;
+  } catch (error) {
+    console.log(error);
+  }
+};
