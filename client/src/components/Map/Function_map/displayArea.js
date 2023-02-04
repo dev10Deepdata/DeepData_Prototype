@@ -4,12 +4,13 @@ import axios from 'axios';
 
 import { deletePolygon, pointCentroid } from './kakaoMapApi';
 import HJD from '../../../api/HJDL.json';
-import {
-  LOAD_COMPANY_DATA_REQUEST,
-  LOAD_WK_DATA_REQUEST,
-} from '../../../reducers/data';
+
 import { createMarker, deleteMarker } from './markerHandle';
-import { SET_POSITION_REQUEST } from '../../../reducers/mapControl';
+import {
+  CREATE_COMPANY_MARKER_REQUEST,
+  LOAD_COMPANY_DATA_REQUEST,
+  SET_POSITION_REQUEST,
+} from '../../../reducers/mapControl';
 
 const { kakao } = window;
 
@@ -24,7 +25,8 @@ export function stateDisplayArea(
   dispatch,
   selectedState,
   markers,
-  info
+  info,
+  cityCompany
 ) {
   let path = [];
   let points = [];
@@ -93,13 +95,6 @@ export function stateDisplayArea(
       case 'Gangwon-do':
         draggable = true;
         map.setDraggable(draggable);
-        // level = 11;
-        // map.setLevel(level, {
-        //   anchor: new kakao.maps.LatLng(38.0529076353974, 128.366277430163),
-        //   animate: {
-        //     duration: 50, //확대 애니메이션 시간
-        //   },
-        // });
         setPositionCenter(
           11,
           new kakao.maps.LatLng(37.73919895548271, 128.22828117457084),
@@ -109,13 +104,6 @@ export function stateDisplayArea(
       case 'Gyeonggi-do':
         draggable = true;
         map.setDraggable(draggable);
-        // level = 11;
-        // map.setLevel(level, {
-        //   anchor: new kakao.maps.LatLng(37.871721918984896, 126.97654151910734),
-        //   animate: {
-        //     duration: 50, //확대 애니메이션 시간
-        //   },
-        // });
         setPositionCenter(
           11,
           new kakao.maps.LatLng(37.53757927947221, 127.20134382044043),
@@ -126,12 +114,6 @@ export function stateDisplayArea(
         draggable = true;
         map.setDraggable(draggable);
         level = 11;
-        // map.setLevel(level, {
-        //   anchor: new kakao.maps.LatLng(34.93804553521694, 128.42889339624926),
-        //   animate: {
-        //     duration: 50, //확대 애니메이션 시간
-        //   },
-        // });
         setPositionCenter(
           11,
           new kakao.maps.LatLng(35.283006157310886, 128.33919530955006),
@@ -141,13 +123,6 @@ export function stateDisplayArea(
       case 'Gyeongsangbuk-do':
         draggable = true;
         map.setDraggable(draggable);
-        // level = 11;
-        // map.setLevel(level, {
-        //   anchor: new kakao.maps.LatLng(36.25873330451512, 128.85702005272682),
-        //   animate: {
-        //     duration: 50, //확대 애니메이션 시간
-        //   },
-        // });
         setPositionCenter(
           11,
           new kakao.maps.LatLng(36.25873330451512, 128.85702005272682),
@@ -157,13 +132,6 @@ export function stateDisplayArea(
       case 'Gwangju':
         draggable = true;
         map.setDraggable(draggable);
-        level = 9;
-        // map.setLevel(level, {
-        //   anchor: new kakao.maps.LatLng(35.08466390322525, 126.75980911015365),
-        //   animate: {
-        //     duration: 50, //확대 애니메이션 시간
-        //   },
-        // });
         setPositionCenter(
           9,
           new kakao.maps.LatLng(35.14322929166207, 126.85227509851431),
@@ -173,13 +141,6 @@ export function stateDisplayArea(
       case 'Daegu':
         draggable = true;
         map.setDraggable(draggable);
-        // level = 9;
-        // map.setLevel(level, {
-        //   anchor: new kakao.maps.LatLng(35.754541179239794, 128.5862731412402),
-        //   animate: {
-        //     duration: 50, //확대 애니메이션 시간
-        //   },
-        // });
         setPositionCenter(
           9,
           new kakao.maps.LatLng(35.83491559340961, 128.58213935896225),
@@ -189,13 +150,6 @@ export function stateDisplayArea(
       case 'Daejeon':
         draggable = true;
         map.setDraggable(draggable);
-        // level = 9;
-        // map.setLevel(level, {
-        //   anchor: new kakao.maps.LatLng(36.32269483677606, 127.38968701671737),
-        //   animate: {
-        //     duration: 50, //확대 애니메이션 시간
-        //   },
-        // });
         setPositionCenter(
           9,
           new kakao.maps.LatLng(36.32269483677606, 127.38968701671737),
@@ -205,13 +159,6 @@ export function stateDisplayArea(
       case 'Busan':
         draggable = true;
         map.setDraggable(draggable);
-        // level = 9;
-        // map.setLevel(level, {
-        //   anchor: new kakao.maps.LatLng(35.10473378247192, 129.13575706970252),
-        //   animate: {
-        //     duration: 50, //확대 애니메이션 시간
-        //   },
-        // });
         setPositionCenter(
           9,
           new kakao.maps.LatLng(35.20262044191565, 129.0195029126348),
@@ -221,13 +168,6 @@ export function stateDisplayArea(
       case 'Seoul':
         draggable = true;
         map.setDraggable(draggable);
-        // level = 9;
-        // map.setLevel(level, {
-        //   anchor: new kakao.maps.LatLng(37.621448900403365, 126.92732383244997),
-        //   animate: {
-        //     duration: 50, //확대 애니메이션 시간
-        //   },
-        // });
         setPositionCenter(
           9,
           new kakao.maps.LatLng(37.55300422304861, 127.01206388620648),
@@ -255,13 +195,6 @@ export function stateDisplayArea(
       case 'Incheon':
         draggable = true;
         map.setDraggable(draggable);
-        // level = 10;
-        // map.setLevel(level, {
-        //   anchor: new kakao.maps.LatLng(37.62640916105082, 126.31615026089418),
-        //   animate: {
-        //     duration: 50, //확대 애니메이션 시간
-        //   },
-        // });
         setPositionCenter(
           10,
           new kakao.maps.LatLng(37.50133410083853, 126.5321865078648),
@@ -271,13 +204,6 @@ export function stateDisplayArea(
       case 'Jellanam-do':
         draggable = true;
         map.setDraggable(draggable);
-        // level = 11;
-        // map.setLevel(level, {
-        //   anchor: new kakao.maps.LatLng(34.366497179766974, 126.5781986935538),
-        //   animate: {
-        //     duration: 50, //확대 애니메이션 시간
-        //   },
-        // });
         setPositionCenter(
           11,
           new kakao.maps.LatLng(34.914873311403966, 127.01096488698131),
@@ -287,13 +213,6 @@ export function stateDisplayArea(
       case 'Jeollabuk-do':
         draggable = true;
         map.setDraggable(draggable);
-        // level = 11;
-        // map.setLevel(level, {
-        //   anchor: new kakao.maps.LatLng(35.52331241984572, 126.9927676176542),
-        //   animate: {
-        //     duration: 50, //확대 애니메이션 시간
-        //   },
-        // });
         setPositionCenter(
           11,
           new kakao.maps.LatLng(35.68316104761558, 127.14398551596905),
@@ -303,13 +222,6 @@ export function stateDisplayArea(
       case 'Jeju-do':
         draggable = true;
         map.setDraggable(draggable);
-        // level = 10;
-        // map.setLevel(level, {
-        //   anchor: new kakao.maps.LatLng(32.91098930285348, 126.2650617764628),
-        //   animate: {
-        //     duration: 50, //확대 애니메이션 시간
-        //   },
-        // });
         setPositionCenter(
           10,
           new kakao.maps.LatLng(33.37008097412234, 126.54587022000568),
@@ -319,13 +231,6 @@ export function stateDisplayArea(
       case 'Chungcheongnam-do':
         draggable = true;
         map.setDraggable(draggable);
-        // level = 11;
-        // map.setLevel(level, {
-        //   anchor: new kakao.maps.LatLng(36.44795538766189, 126.64431035997173),
-        //   animate: {
-        //     duration: 50, //확대 애니메이션 시간
-        //   },
-        // });
         setPositionCenter(
           11,
           new kakao.maps.LatLng(36.53450947749846, 126.87683044222051),
@@ -335,13 +240,6 @@ export function stateDisplayArea(
       case 'Chungcheongbuk-do':
         draggable = true;
         map.setDraggable(draggable);
-        // level = 11;
-        // map.setLevel(level, {
-        //   anchor: new kakao.maps.LatLng(36.75755940408185, 127.74952230420188),
-        //   animate: {
-        //     duration: 50, //확대 애니메이션 시간
-        //   },
-        // });
         setPositionCenter(
           11,
           new kakao.maps.LatLng(36.75755940408185, 127.74952230420188),
@@ -372,7 +270,8 @@ export function stateDisplayArea(
         dispatch,
         selectedState,
         markers,
-        info
+        info,
+        cityCompany
       );
     });
   });
@@ -390,7 +289,8 @@ export function cityDisplayArea(
   dispatch,
   selectedState,
   markers,
-  info
+  info,
+  cityCompany
 ) {
   let path = [];
   let points = [];
@@ -458,6 +358,29 @@ export function cityDisplayArea(
 
   kakao.maps.event.addListener(polygon, 'click', async function (mouseEvent) {
     draggable = true;
+    try {
+      let region = code;
+      // const result = await axios.get(
+      //   `http://localhost:3066/data/loadwk/${region}`,
+      //   region
+      // );
+      // console.log(result);
+      // deleteMarker(markers);
+      // if (result.data.length > 0) {
+      //   createMarker(result.data, map, markers, name, info);
+      // }
+      await dispatch({
+        type: LOAD_COMPANY_DATA_REQUEST,
+        data: {
+          region,
+        },
+      });
+      console.log('cityCompany [set]: ', cityCompany);
+      // deleteMarker(markers);
+    } catch (err) {
+      console.log(err);
+    }
+
     map.setDraggable(draggable);
 
     let HjdData = HJD.features;
@@ -465,7 +388,6 @@ export function cityDisplayArea(
     let HjdCoordinates = [];
     let HjdName = '';
 
-    console.log('displayArea', typeof liPolygons);
     deletePolygon(liPolygons);
 
     // center
@@ -474,14 +396,17 @@ export function cityDisplayArea(
     HjdData.forEach((val) => {
       if (val.properties['sggnm'] === name) {
         HjdCoordinates = val.geometry.coordinates[0];
-        HjdName = val.properties['sggnm'];
+        HjdName = val.properties['temp'];
         townDisplayArea(
           HjdCoordinates,
           HjdName,
           liPolygons,
           map,
           customOverlay,
-          draggable
+          draggable,
+          dispatch,
+          cityCompany,
+          info
         );
       }
     });
@@ -493,21 +418,6 @@ export function cityDisplayArea(
         fillOpacity: 0.1,
       });
     });
-
-    try {
-      let region = code;
-      const result = await axios.get(
-        `http://localhost:3066/data/loadwk/${region}`,
-        region
-      );
-      console.log(result);
-      deleteMarker(markers);
-      if (result.data.length > 0) {
-        createMarker(result.data, map, markers, name, info);
-      }
-    } catch (err) {
-      console.log(err);
-    }
   });
 }
 
@@ -517,7 +427,10 @@ export function townDisplayArea(
   liPolygons,
   map,
   customOverlay,
-  draggable
+  draggable,
+  dispatch,
+  cityCompany,
+  info
 ) {
   let path = [];
   let points = [];
@@ -550,6 +463,58 @@ export function townDisplayArea(
   });
 
   liPolygons.push(polygon);
+
+  const liCenterCoor = pointCentroid(points);
+
+  // 다각형에 mouseover 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 변경합니다
+  // 지역명을 표시하는 커스텀오버레이를 지도위에 표시합니다
+  kakao.maps.event.addListener(polygon, 'mouseover', function (mouseEvent) {
+    polygon.setOptions({ fillColor: '#09f' });
+    draggable = false;
+    map.setDraggable(draggable);
+  });
+
+  // 다각형에 mousemove 이벤트를 등록하고 이벤트가 발생하면 커스텀 오버레이의 위치를 변경합니다
+  kakao.maps.event.addListener(polygon, 'mousemove', function (mouseEvent) {
+    customOverlay.setPosition(mouseEvent.latLng);
+  });
+
+  // 다각형에 mouseout 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 원래색으로 변경합니다
+  // 커스텀 오버레이를 지도에서 제거합니다
+  kakao.maps.event.addListener(polygon, 'mouseout', function () {
+    draggable = true;
+    map.setDraggable(draggable);
+
+    polygon.setOptions({ fillColor: '#CDE990' });
+    customOverlay.setMap(null);
+  });
+
+  kakao.maps.event.addListener(polygon, 'click', async function (mouseEvent) {
+    draggable = true;
+    console.log('li name: ', name);
+    // console.log('cityCompany [set]: ', cityCompany);
+    // // deleteMarker(markers);
+
+    map.setDraggable(draggable);
+    if (info) {
+      // console.log('info: ', info);
+      for (let i = 0; i < info.length; i++) {
+        info[i].close();
+      }
+    }
+
+    dispatch({
+      type: CREATE_COMPANY_MARKER_REQUEST,
+      data: {
+        li: name,
+      },
+    });
+
+    setPositionCenter(9, liCenterCoor, dispatch);
+
+    // console.log('displayArea', typeof liPolygons);
+    // deletePolygon(liPolygons);
+  });
 }
 
 function setPositionCenter(level, coor, dispatch) {

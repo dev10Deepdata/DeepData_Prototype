@@ -8,12 +8,7 @@ export const initialState = {
   joinLoading: false,
   joinDone: false,
   joinError: null,
-  loadWkDataLoading: false,
-  loadWkDataDone: false,
-  loadWkDataError: null,
-  loadCompanyDataLoading: false,
-  loadCompanyDataDone: false,
-  loadCompanyDataError: null,
+
   cnDataLoadLoading: false,
   cnDataLoadDone: false,
   cnDataLoadError: null,
@@ -26,13 +21,6 @@ export const JOIN_REQUEST = 'JOIN_REQUEST';
 export const JOIN_SUCCESS = 'JOIN_SUCCESS';
 export const JOIN_FAILURE = 'JOIN_FAILURE';
 
-export const LOAD_WK_DATA_REQUEST = 'LOAD_WK_DATA_REQUEST';
-export const LOAD_WK_DATA_SUCCESS = 'LOAD_WK_DATA_SUCCESS';
-export const LOAD_WK_DATA_FAILURE = 'LOAD_WK_DATA_FAILURE';
-
-export const LOAD_COMPANY_DATA_REQUEST = 'LOAD_COMPANY_DATA_REQUEST';
-export const LOAD_COMPANY_DATA_SUCCESS = 'LOAD_COMPANY_DATA_SUCCESS';
-export const LOAD_COMPANY_DATA_FAILURE = 'LOAD_COMPANY_DATA_FAILURE';
 
 export const CN_DATA_LOAD_REQUEST = 'CN_DATA_LOAD_REQUEST';
 export const CN_DATA_LOAD_SUCCESS = 'CN_DATA_LOAD_SUCCESS';
@@ -60,37 +48,8 @@ const reducer = (state = initialState, action) => {
         draft.joinLoading = false;
         draft.joinError = action.error;
         break;
-      case LOAD_WK_DATA_REQUEST:
-        draft.loadWkDataLoading = true;
-        draft.loadWkDataDone = false;
-        draft.loadWkDataError = null;
-        break;
-      case LOAD_WK_DATA_SUCCESS:
-        draft.loadWkDataLoading = false;
-        draft.loadWkDataDone = true;
-        draft.selectedState = action.data.data;
-        console.log('selectedState: ', draft.selectedState);
-        console.log('load my data: ', action.data.data);
-        console.log('load my data: ', typeof action.data.data);
-        break;
-      case LOAD_WK_DATA_FAILURE:
-        draft.loadWkDataLoading = false;
-        draft.loadWkDataError = action.error;
-        break;
-      case LOAD_COMPANY_DATA_REQUEST:
-        draft.loadCompanyDataLoading = true;
-        draft.loadCompanyDataDone = false;
-        draft.loadCompanyDataError = null;
-        break;
-      case LOAD_COMPANY_DATA_SUCCESS:
-        draft.loadCompanyDataLoading = false;
-        draft.loadCompanyDataDone = true;
-        draft.selectedCityCP = action.data.data;
-        break;
-      case LOAD_COMPANY_DATA_FAILURE:
-        draft.loadCompanyDataLoading = false;
-        draft.loadCompanyDataError = action.error;
-        break;
+     
+
       case CN_DATA_LOAD_REQUEST:
         draft.cnDataLoadLoading = true;
         draft.cnDataLoadDone = false;

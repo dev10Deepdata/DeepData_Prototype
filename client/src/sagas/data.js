@@ -10,9 +10,6 @@ import {
   SAVE_DATA_REQUEST,
   SAVE_DATA_SUCCESS,
   SAVE_DATA_FAILURE,
-  LOAD_WK_DATA_REQUEST,
-  LOAD_WK_DATA_SUCCESS,
-  LOAD_WK_DATA_FAILURE,
 } from '../reducers/data';
 
 // function cnDataLoadAPI(data) {
@@ -57,28 +54,6 @@ function* join(action) {
   }
 }
 
-function loadWkDataAPI(data) {
-  console.log('loadApi datal: ', data);
-  return axios.get(`http://localhost:3066/data/loadwk/${data.region}`, data);
-}
-
-function* loadWkData(action) {
-  try {
-    console.log('loadwkSaga');
-    const result = yield call(loadWkDataAPI, action.data);
-    yield put({
-      type: LOAD_WK_DATA_SUCCESS,
-      data: result,
-    });
-  } catch (err) {
-    console.error(err);
-    yield put({
-      type: LOAD_WK_DATA_FAILURE,
-      error: err.response.data,
-    });
-  }
-}
-
 function saveDataAPI(data) {
   return axios.post(`http://localhost:3066/data/savedata`, data);
 }
@@ -107,18 +82,10 @@ function* watchCnDataLoad() {
 function* watchJoin() {
   yield takeLatest(JOIN_REQUEST, join);
 }
-function* watchLoadWkData() {
-  yield takeLatest(LOAD_WK_DATA_REQUEST, loadWkData);
-}
 function* watchSaveData() {
   yield takeLatest(SAVE_DATA_REQUEST, saveData);
 }
 
 export default function* dataSaga() {
-  yield all([
-    fork(watchCnDataLoad),
-    fork(watchJoin),
-    fork(watchSaveData),
-    fork(watchLoadWkData),
-  ]);
+  yield all([fork(watchCnDataLoad), fork(watchJoin), fork(watchSaveData)]);
 }

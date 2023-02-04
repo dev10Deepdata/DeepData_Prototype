@@ -2,7 +2,17 @@ import createContent from './createContent';
 
 const { kakao } = window;
 
-export const createMarker = (city, map, markers, name, info) => {
+export const createMarker = (
+  city,
+  map,
+  companyMarkers,
+  setCompanyMarker,
+  companyInfo,
+  setCompanyInfo
+) => {
+  const temp = [];
+  let info = [];
+
   city.map((v) => {
     // , 제거
     let address = v.coAddr._text;
@@ -11,11 +21,10 @@ export const createMarker = (city, map, markers, name, info) => {
       address = cutstr[0];
     }
     // 유효성 검사
-    if (address.indexOf(name) === -1) {
-      return;
-    }
+    // if (address.indexOf(name) === -1) {
+    //   return;
+    // }
     let geocoder = new kakao.maps.services.Geocoder();
-
     geocoder.addressSearch(address, function (result, status) {
       // 정상적으로 검색이 완료됐으면
       if (status === kakao.maps.services.Status.OK) {
@@ -50,16 +59,19 @@ export const createMarker = (city, map, markers, name, info) => {
           map: map,
           position: coords,
         });
-        markers.push(marker);
+        temp.push(marker);
         // map.setCenter(coords);
 
         // 마커에 클릭이벤트를 등록합니다
         kakao.maps.event.addListener(marker, 'click', async (event) => {
+          // if (companyMarkers) {
+          //   deleteMarker(companyMarkers, setCompanyMarker);
+          // }
           if (info) {
-            // console.log('info: ', info);
             for (let i = 0; i < info.length; i++) {
               info[i].close();
             }
+            // info = [];
           }
           // 마커 위에 인포윈도우를 표시합니다
           try {
@@ -127,14 +139,27 @@ export const createMarker = (city, map, markers, name, info) => {
       }
     });
   });
+  console.log(info);
+  setCompanyInfo(info);
+  setCompanyMarker(temp);
 };
 
-export const deleteMarker = (markers) => {
-  if (!markers) {
+export const deleteMarker = (companyMarkers, setCompanyMarker) => {
+  if (!(companyMarkers.length > 0)) {
     return;
   }
-  for (let i = 0; i < markers.length; i++) {
-    markers[i].setMap(null);
+  for (let i = 0; i < companyMarkers.length; i++) {
+    companyMarkers[i].setMap(null);
   }
-  markers = [];
+  setCompanyMarker([]);
+};
+export const deleteInfo = (companyInfo, setCompanyInfo) => {
+  if (!(companyInfo.length > 0)) {
+    return;
+  }
+  console.log(companyInfo);
+  for (let i = 0; i < companyInfo.length; i++) {
+    companyInfo[i].close();
+  }
+  setCompanyInfo([]);
 };
