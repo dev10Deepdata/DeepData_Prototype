@@ -9,6 +9,7 @@ import {
   LOAD_WK_DATA_REQUEST,
 } from '../../../reducers/data';
 import { createMarker, deleteMarker } from './markerHandle';
+import { SET_POSITION_REQUEST } from '../../../reducers/mapControl';
 
 const { kakao } = window;
 
@@ -88,313 +89,264 @@ export function stateDisplayArea(
 
   kakao.maps.event.addListener(polygon, 'click', function (mouseEvent) {
     let level;
-    let region;
     switch (name) {
       case 'Gangwon-do':
-        // region = '42000';
-        // dispatch({
-        //   type: LOAD_WK_DATA_REQUEST,
-        //   data: {
-        //     region,
-        //   },
-        // });
         draggable = true;
         map.setDraggable(draggable);
-        level = 11;
-        map.setLevel(level, {
-          anchor: new kakao.maps.LatLng(38.0529076353974, 128.366277430163),
-          animate: {
-            duration: 50, //확대 애니메이션 시간
-          },
-        });
+        // level = 11;
+        // map.setLevel(level, {
+        //   anchor: new kakao.maps.LatLng(38.0529076353974, 128.366277430163),
+        //   animate: {
+        //     duration: 50, //확대 애니메이션 시간
+        //   },
+        // });
+        setPositionCenter(
+          11,
+          new kakao.maps.LatLng(37.73919895548271, 128.22828117457084),
+          dispatch
+        );
         break;
       case 'Gyeonggi-do':
-        // region = '41000';
-        // dispatch({
-        //   type: LOAD_WK_DATA_REQUEST,
-        //   data: {
-        //     region,
-        //   },
-        // });
         draggable = true;
         map.setDraggable(draggable);
-        level = 11;
-        map.setLevel(level, {
-          anchor: new kakao.maps.LatLng(37.871721918984896, 126.97654151910734),
-          animate: {
-            duration: 50, //확대 애니메이션 시간
-          },
-        });
+        // level = 11;
+        // map.setLevel(level, {
+        //   anchor: new kakao.maps.LatLng(37.871721918984896, 126.97654151910734),
+        //   animate: {
+        //     duration: 50, //확대 애니메이션 시간
+        //   },
+        // });
+        setPositionCenter(
+          11,
+          new kakao.maps.LatLng(37.53757927947221, 127.20134382044043),
+          dispatch
+        );
         break;
       case 'Gyeongsangnam-do':
-        // region = '48000';
-        // dispatch({
-        //   type: LOAD_WK_DATA_REQUEST,
-        //   data: {
-        //     region,
-        //   },
-        // });
         draggable = true;
         map.setDraggable(draggable);
         level = 11;
-        map.setLevel(level, {
-          anchor: new kakao.maps.LatLng(34.93804553521694, 128.42889339624926),
-          animate: {
-            duration: 50, //확대 애니메이션 시간
-          },
-        });
+        // map.setLevel(level, {
+        //   anchor: new kakao.maps.LatLng(34.93804553521694, 128.42889339624926),
+        //   animate: {
+        //     duration: 50, //확대 애니메이션 시간
+        //   },
+        // });
+        setPositionCenter(
+          11,
+          new kakao.maps.LatLng(35.283006157310886, 128.33919530955006),
+          dispatch
+        );
         break;
       case 'Gyeongsangbuk-do':
-        // region = '47000';
-        // dispatch({
-        //   type: LOAD_WK_DATA_REQUEST,
-        //   data: {
-        //     region,
-        //   },
-        // });
         draggable = true;
         map.setDraggable(draggable);
-        level = 11;
-        map.setLevel(level, {
-          anchor: new kakao.maps.LatLng(36.25873330451512, 128.85702005272682),
-          animate: {
-            duration: 50, //확대 애니메이션 시간
-          },
-        });
+        // level = 11;
+        // map.setLevel(level, {
+        //   anchor: new kakao.maps.LatLng(36.25873330451512, 128.85702005272682),
+        //   animate: {
+        //     duration: 50, //확대 애니메이션 시간
+        //   },
+        // });
+        setPositionCenter(
+          11,
+          new kakao.maps.LatLng(36.25873330451512, 128.85702005272682),
+          dispatch
+        );
         break;
       case 'Gwangju':
-        // region = '29000';
-        // dispatch({
-        //   type: LOAD_WK_DATA_REQUEST,
-        //   data: {
-        //     region,
-        //   },
-        // });
         draggable = true;
         map.setDraggable(draggable);
         level = 9;
-        map.setLevel(level, {
-          anchor: new kakao.maps.LatLng(35.08466390322525, 126.75980911015365),
-          animate: {
-            duration: 50, //확대 애니메이션 시간
-          },
-        });
+        // map.setLevel(level, {
+        //   anchor: new kakao.maps.LatLng(35.08466390322525, 126.75980911015365),
+        //   animate: {
+        //     duration: 50, //확대 애니메이션 시간
+        //   },
+        // });
+        setPositionCenter(
+          9,
+          new kakao.maps.LatLng(35.14322929166207, 126.85227509851431),
+          dispatch
+        );
         break;
       case 'Daegu':
-        // region = '27000';
-        // dispatch({
-        //   type: LOAD_WK_DATA_REQUEST,
-        //   data: {
-        //     region,
-        //   },
-        // });
         draggable = true;
         map.setDraggable(draggable);
-        level = 9;
-        map.setLevel(level, {
-          anchor: new kakao.maps.LatLng(35.754541179239794, 128.5862731412402),
-          animate: {
-            duration: 50, //확대 애니메이션 시간
-          },
-        });
+        // level = 9;
+        // map.setLevel(level, {
+        //   anchor: new kakao.maps.LatLng(35.754541179239794, 128.5862731412402),
+        //   animate: {
+        //     duration: 50, //확대 애니메이션 시간
+        //   },
+        // });
+        setPositionCenter(
+          9,
+          new kakao.maps.LatLng(35.83491559340961, 128.58213935896225),
+          dispatch
+        );
         break;
       case 'Daejeon':
-        // region = '30000';
-        // dispatch({
-        //   type: LOAD_WK_DATA_REQUEST,
-        //   data: {
-        //     region,
-        //   },
-        // });
         draggable = true;
         map.setDraggable(draggable);
-        level = 9;
-        map.setLevel(level, {
-          anchor: new kakao.maps.LatLng(36.32269483677606, 127.38968701671737),
-          animate: {
-            duration: 50, //확대 애니메이션 시간
-          },
-        });
+        // level = 9;
+        // map.setLevel(level, {
+        //   anchor: new kakao.maps.LatLng(36.32269483677606, 127.38968701671737),
+        //   animate: {
+        //     duration: 50, //확대 애니메이션 시간
+        //   },
+        // });
+        setPositionCenter(
+          9,
+          new kakao.maps.LatLng(36.32269483677606, 127.38968701671737),
+          dispatch
+        );
         break;
       case 'Busan':
-        // region = '26000';
-        // dispatch({
-        //   type: LOAD_WK_DATA_REQUEST,
-        //   data: {
-        //     region,
-        //   },
-        // });
         draggable = true;
         map.setDraggable(draggable);
-        level = 9;
-        map.setLevel(level, {
-          anchor: new kakao.maps.LatLng(35.10473378247192, 129.13575706970252),
-          animate: {
-            duration: 50, //확대 애니메이션 시간
-          },
-        });
+        // level = 9;
+        // map.setLevel(level, {
+        //   anchor: new kakao.maps.LatLng(35.10473378247192, 129.13575706970252),
+        //   animate: {
+        //     duration: 50, //확대 애니메이션 시간
+        //   },
+        // });
+        setPositionCenter(
+          9,
+          new kakao.maps.LatLng(35.20262044191565, 129.0195029126348),
+          dispatch
+        );
         break;
       case 'Seoul':
-        // region = '11000';
-        // dispatch({
-        //   type: LOAD_WK_DATA_REQUEST,
-        //   data: {
-        //     region,
-        //   },
-        // });
         draggable = true;
         map.setDraggable(draggable);
-        level = 9;
-        map.setLevel(level, {
-          anchor: new kakao.maps.LatLng(37.621448900403365, 126.92732383244997),
-          animate: {
-            duration: 50, //확대 애니메이션 시간
-          },
-        });
+        // level = 9;
+        // map.setLevel(level, {
+        //   anchor: new kakao.maps.LatLng(37.621448900403365, 126.92732383244997),
+        //   animate: {
+        //     duration: 50, //확대 애니메이션 시간
+        //   },
+        // });
+        setPositionCenter(
+          9,
+          new kakao.maps.LatLng(37.55300422304861, 127.01206388620648),
+          dispatch
+        );
         break;
       case 'Sejong-si':
-        // region = '36110';
-        // dispatch({
-        //   type: LOAD_WK_DATA_REQUEST,
-        //   data: {
-        //     region,
-        //   },
-        // });
         draggable = true;
         map.setDraggable(draggable);
-        level = 9;
-        map.setLevel(level, {
-          anchor: new kakao.maps.LatLng(36.584391383316586, 127.2207973037805),
-          animate: {
-            duration: 50, //확대 애니메이션 시간
-          },
-        });
+        setPositionCenter(
+          9,
+          new kakao.maps.LatLng(36.584391383316586, 127.2207973037805),
+          dispatch
+        );
         break;
       case 'Ulsan':
-        // region = '31000';
-        // dispatch({
-        //   type: LOAD_WK_DATA_REQUEST,
-        //   data: {
-        //     region,
-        //   },
-        // });
         draggable = true;
         map.setDraggable(draggable);
-        level = 9;
-        map.setLevel(level, {
-          anchor: new kakao.maps.LatLng(35.46313999599253, 129.3094347594351),
-          animate: {
-            duration: 50, //확대 애니메이션 시간
-          },
-        });
+        setPositionCenter(
+          9,
+          new kakao.maps.LatLng(35.54565177650688, 129.23870238065314),
+          dispatch
+        );
         break;
       case 'Incheon':
-        // region = '28000';
-        // dispatch({
-        //   type: LOAD_WK_DATA_REQUEST,
-        //   data: {
-        //     region,
-        //   },
-        // });
         draggable = true;
         map.setDraggable(draggable);
-        level = 10;
-        map.setLevel(level, {
-          anchor: new kakao.maps.LatLng(37.62640916105082, 126.31615026089418),
-          animate: {
-            duration: 50, //확대 애니메이션 시간
-          },
-        });
+        // level = 10;
+        // map.setLevel(level, {
+        //   anchor: new kakao.maps.LatLng(37.62640916105082, 126.31615026089418),
+        //   animate: {
+        //     duration: 50, //확대 애니메이션 시간
+        //   },
+        // });
+        setPositionCenter(
+          10,
+          new kakao.maps.LatLng(37.50133410083853, 126.5321865078648),
+          dispatch
+        );
         break;
       case 'Jellanam-do':
-        // region = '46000';
-        // dispatch({
-        //   type: LOAD_WK_DATA_REQUEST,
-        //   data: {
-        //     region,
-        //   },
-        // });
         draggable = true;
         map.setDraggable(draggable);
-        level = 11;
-        map.setLevel(level, {
-          anchor: new kakao.maps.LatLng(34.366497179766974, 126.5781986935538),
-          animate: {
-            duration: 50, //확대 애니메이션 시간
-          },
-        });
+        // level = 11;
+        // map.setLevel(level, {
+        //   anchor: new kakao.maps.LatLng(34.366497179766974, 126.5781986935538),
+        //   animate: {
+        //     duration: 50, //확대 애니메이션 시간
+        //   },
+        // });
+        setPositionCenter(
+          11,
+          new kakao.maps.LatLng(34.914873311403966, 127.01096488698131),
+          dispatch
+        );
         break;
       case 'Jeollabuk-do':
-        // region = '45000';
-        // dispatch({
-        //   type: LOAD_WK_DATA_REQUEST,
-        //   data: {
-        //     region,
-        //   },
-        // });
         draggable = true;
         map.setDraggable(draggable);
-        level = 11;
-        map.setLevel(level, {
-          anchor: new kakao.maps.LatLng(35.52331241984572, 126.9927676176542),
-          animate: {
-            duration: 50, //확대 애니메이션 시간
-          },
-        });
+        // level = 11;
+        // map.setLevel(level, {
+        //   anchor: new kakao.maps.LatLng(35.52331241984572, 126.9927676176542),
+        //   animate: {
+        //     duration: 50, //확대 애니메이션 시간
+        //   },
+        // });
+        setPositionCenter(
+          11,
+          new kakao.maps.LatLng(35.68316104761558, 127.14398551596905),
+          dispatch
+        );
         break;
       case 'Jeju-do':
-        // region = '50000';
-        // dispatch({
-        //   type: LOAD_WK_DATA_REQUEST,
-        //   data: {
-        //     region,
-        //   },
-        // });
         draggable = true;
         map.setDraggable(draggable);
-        level = 10;
-        map.setLevel(level, {
-          anchor: new kakao.maps.LatLng(32.91098930285348, 126.2650617764628),
-          animate: {
-            duration: 50, //확대 애니메이션 시간
-          },
-        });
+        // level = 10;
+        // map.setLevel(level, {
+        //   anchor: new kakao.maps.LatLng(32.91098930285348, 126.2650617764628),
+        //   animate: {
+        //     duration: 50, //확대 애니메이션 시간
+        //   },
+        // });
+        setPositionCenter(
+          10,
+          new kakao.maps.LatLng(33.37008097412234, 126.54587022000568),
+          dispatch
+        );
         break;
       case 'Chungcheongnam-do':
-        // region = '44000';
-        // dispatch({
-        //   type: LOAD_WK_DATA_REQUEST,
-        //   data: {
-        //     region,
-        //   },
-        // });
         draggable = true;
         map.setDraggable(draggable);
-        level = 11;
-        map.setLevel(level, {
-          anchor: new kakao.maps.LatLng(36.44795538766189, 126.64431035997173),
-          animate: {
-            duration: 50, //확대 애니메이션 시간
-          },
-        });
+        // level = 11;
+        // map.setLevel(level, {
+        //   anchor: new kakao.maps.LatLng(36.44795538766189, 126.64431035997173),
+        //   animate: {
+        //     duration: 50, //확대 애니메이션 시간
+        //   },
+        // });
+        setPositionCenter(
+          11,
+          new kakao.maps.LatLng(36.53450947749846, 126.87683044222051),
+          dispatch
+        );
         break;
       case 'Chungcheongbuk-do':
-        // region = '43000';
-        // dispatch({
-        //   type: LOAD_WK_DATA_REQUEST,
-        //   data: {
-        //     region,
-        //   },
-        // });
         draggable = true;
         map.setDraggable(draggable);
-        level = 11;
-        map.setLevel(level, {
-          anchor: new kakao.maps.LatLng(36.75755940408185, 127.74952230420188),
-          animate: {
-            duration: 50, //확대 애니메이션 시간
-          },
-        });
+        // level = 11;
+        // map.setLevel(level, {
+        //   anchor: new kakao.maps.LatLng(36.75755940408185, 127.74952230420188),
+        //   animate: {
+        //     duration: 50, //확대 애니메이션 시간
+        //   },
+        // });
+        setPositionCenter(
+          11,
+          new kakao.maps.LatLng(36.75755940408185, 127.74952230420188),
+          dispatch
+        );
         break;
       default:
         break;
@@ -516,7 +468,8 @@ export function cityDisplayArea(
     console.log('displayArea', typeof liPolygons);
     deletePolygon(liPolygons);
 
-    setCityCenter(map, centerCoor);
+    // center
+    setPositionCenter(10, centerCoor, dispatch);
 
     HjdData.forEach((val) => {
       if (val.properties['sggnm'] === name) {
@@ -599,11 +552,12 @@ export function townDisplayArea(
   liPolygons.push(polygon);
 }
 
-function setCityCenter(map, coor) {
-  map.setLevel(10, {
-    // animate: {
-    //   duration: 50, //확대 애니메이션 시간
-    // },
+function setPositionCenter(level, coor, dispatch) {
+  dispatch({
+    type: SET_POSITION_REQUEST,
+    data: {
+      level: level,
+      center: coor,
+    },
   });
-  map.setCenter(coor);
 }

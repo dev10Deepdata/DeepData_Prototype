@@ -21,6 +21,7 @@ import { deleteMarker } from './Function_map/markerHandle';
 const Map = () => {
   const { kakao } = window;
   const { me, selectedState } = useSelector((state) => state.data);
+  const { position } = useSelector((state) => state.mapControl);
   const dispatch = useDispatch();
 
   const [krMap, setKrMap] = useState(); // 카카오맵 저장
@@ -236,6 +237,15 @@ const Map = () => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [krMap]);
+
+  // 맵 변화 감지
+  useEffect(() => {
+    if (!position) {
+      return;
+    }
+    krMap.setLevel(position.level);
+    krMap.setCenter(position.center);
+  }, [position]);
 
   return (
     <MapW>
