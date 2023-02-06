@@ -8,7 +8,9 @@ export const createMarker = (
   companyMarkers,
   setCompanyMarker,
   companyInfo,
-  setCompanyInfo
+  setCompanyInfo,
+  startPoint,
+  krMap
 ) => {
   const temp = [];
   let info = [];
@@ -85,53 +87,73 @@ export const createMarker = (
             });
             info.push(infowindow);
             infowindow.open(map, marker);
+
+            // 목적지 동작
+            // -----------------------------<ing
+            console.log('start Point_Info: ', startPoint);
+            console.log('start Point_Info: ', startPoint.La);
             // const infoBtn = document.querySelector('#btnClick');
             // infoBtn.onclick = onSaveLike;
-            // 목적지 지정 버튼 생성
-            // const $infoBtnGroup = document.querySelector('#infoBtnGroup');
-            // const endPointBtn = document.createElement('button');
-            // endPointBtn.innerHTML = 'endPoint';
+
+            // // 목적지 지정 버튼 생성
+            const $infoBtnGroup = document.querySelector('#infoBtnGroup');
+            const endPointBtn = document.createElement('button');
+            endPointBtn.innerHTML = 'endPoint';
             // /**
             //  * 목적지 지정 버튼 클릭시 동작
             //  */
-            // function onClickDistance() {
-            //   const endPointData = coords;
-            //   // 출발지, 목적지 좌표 정의
-            //   let linePath = [
-            //     new kakao.maps.LatLng(
-            //       startPointData['Ma'],
-            //       startPointData['La']
-            //     ),
-            //     new kakao.maps.LatLng(endPointData['Ma'], endPointData['La']),
-            //   ];
-            //   // 목적지 마커 생성
-            //   EPmarker.setPosition(
-            //     new kakao.maps.LatLng(endPointData['Ma'], endPointData['La'])
-            //   );
-            //   EPmarker.setMap(map);
-            //   polyline.setPath(linePath);
-            //   console.log('길이: ' + Math.round(polyline.getLength()));
-            //   const $lineDistance = document.querySelector('#lineDistance');
-            //   $lineDistance.textContent = `출발지점 -> 목적지(${
-            //     v['업체명']
-            //   }): ${Math.round(polyline.getLength())}M`;
-            //   polyline.setMap(map);
-            //   infowindow.close();
-            //   var level = 10;
-            //   map.setLevel(level, {
-            //     anchor: new kakao.maps.LatLng(
-            //       endPointData['Ma'],
-            //       endPointData['La']
-            //     ),
-            //     animate: {
-            //       duration: 50, //확대 애니메이션 시간
-            //     },
-            //   });
-            //   deleteMarker();
-            //   deletePolygon(polygons);
-            // }
-            // endPointBtn.onclick = onClickDistance;
-            // $infoBtnGroup.append(endPointBtn);
+            function onClickDistance() {
+              const endPointData = coords;
+              // 출발지, 목적지 좌표 정의
+              let linePath = [
+                new kakao.maps.LatLng(startPoint.Ma, startPoint.La),
+                new kakao.maps.LatLng(endPointData['Ma'], endPointData['La']),
+              ];
+
+              var imageSrc = './img/SPmarker.png', // 마커이미지의 주소입니다
+                imageSize = new kakao.maps.Size(22, 36), // 마커이미지의 크기입니다
+                imageOption = { offset: new kakao.maps.Point(10, 39) };
+              var markerImage = new kakao.maps.MarkerImage(
+                imageSrc,
+                imageSize,
+                imageOption
+              );
+              let EPmarker = new kakao.maps.Marker({
+                map: krMap,
+                image: markerImage,
+              });
+              // 목적지 마커 생성
+              EPmarker.setPosition(
+                new kakao.maps.LatLng(endPointData['Ma'], endPointData['La'])
+              );
+              EPmarker.setMap(map);
+              let polyline = new kakao.maps.Polyline({
+                map: krMap,
+                strokeWeight: 5,
+                strokeColor: '#FF00FF',
+                strokeOpacity: 0.8,
+                strokeStyle: 'solid',
+              });
+              polyline.setPath(linePath);
+              console.log('길이: ' + Math.round(polyline.getLength()));
+              const $lineDistance = document.querySelector('#lineDistance');
+              $lineDistance.textContent = `출발지점 -> 목적지(${
+                v.coNm._text
+              }): ${Math.round(polyline.getLength())}M`;
+              // polyline.setMap(map);
+              infowindow.close();
+              var level = 10;
+              map.setLevel(level, {
+                anchor: new kakao.maps.LatLng(
+                  endPointData['Ma'],
+                  endPointData['La']
+                ),
+              });
+              // deleteMarker();
+              // deletePolygon(polygons);
+            }
+            endPointBtn.onclick = onClickDistance;
+            $infoBtnGroup.append(endPointBtn);
           } catch (err) {
             console.log(err);
           }

@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import geojson from '../../api/TL_SCCO_SIG.json';
 import koreaDo from '../../api/korea_do_data.json';
 import koreaSi from '../../api/korea_si.json';
-
+import { deletePolygon } from './Function_map/kakaoMapApi';
 import EupMyeonDong from '../../api/HJD.json';
 
 import {
@@ -21,17 +21,22 @@ import {
   deleteInfo,
   deleteMarker,
 } from './Function_map/markerHandle';
+import { REMOVE_OVERLAY_SUCCESS } from '../../reducers/mapControl';
 
 const Map = () => {
   const { kakao } = window;
-  const { me, selectedState } = useSelector((state) => state.data);
-  const { position, cityCompany, selectTown } = useSelector(
-    (state) => state.mapControl
-  );
+  const { selectedState } = useSelector((state) => state.data);
+  const { position, cityCompany, selectTown, countOverlay, tempCountOverlay } =
+    useSelector((state) => state.mapControl);
   const dispatch = useDispatch();
 
   const [krMap, setKrMap] = useState(); // 카카오맵 저장
   const [customOverlay, setCustomOverlay] = useState(); // 카카오맵 저장
+
+  // 출발지점 저장
+  const [startPoint, setStartPoint] = useState();
+  let SPmarker;
+  let EPmarker;
 
   // 도, 특별시, 광역시
   let DoData = koreaDo.features; // 해당 구역 이름, 좌표 등
@@ -56,11 +61,9 @@ const Map = () => {
 
   // 폴리곤 보관
   let polygons = [];
-
   let liPolygons = [];
 
   const [renderSwitch, setRenderSwitch] = useState(false);
-  // const [renderSwitch, setRenderSwitch] = useState(false);
 
   /**
    * 초기값 false (화면 버튼을 눌러도 동작하지 않게 설정)
@@ -75,15 +78,13 @@ const Map = () => {
   // 폴리곤 내에서 드래그를 막고자 하는 변수
   let draggable = true;
 
-  // let markers = []; // 생선된 마커를 담는다.
   const [companyMarkers, setCompanyMarker] = useState([]);
-  // let info = []; // 생성된 infoWindow를 담는다.
+
   const [companyInfo, setCompanyInfo] = useState([]);
 
   let set = false;
   // 카카오맵 초기 셋팅
   useEffect(() => {
-    console.log(set, lenSw);
     const container = document.getElementById('kakaoMap');
     const options = {
       center: new kakao.maps.LatLng(36.6017606568142, 127.80702241209042),
@@ -117,7 +118,10 @@ const Map = () => {
           selectedState,
           companyMarkers,
           companyInfo,
-          cityCompany
+          cityCompany,
+          startPoint,
+          setStartPoint,
+          countOverlay
         );
       });
       setRenderSwitch(false);
@@ -133,15 +137,6 @@ const Map = () => {
     if (!krMap) {
       return;
     }
-
-    // 출발지점 - 목적지점 line
-    let polyline = new kakao.maps.Polyline({
-      map: krMap,
-      strokeWeight: 5,
-      strokeColor: '#FF00FF',
-      strokeOpacity: 0.8,
-      strokeStyle: 'solid',
-    });
 
     // 도 새성
     DoData.forEach((val) => {
@@ -159,13 +154,21 @@ const Map = () => {
         selectedState,
         companyMarkers,
         companyInfo,
-        cityCompany
+        cityCompany,
+        startPoint,
+        setStartPoint,
+        countOverlay
       );
     });
 
-    // End 초기화
-
-    // 폴리곤 클릭시 해당 지역으로 줌 하며, 생성되어 있는 폴리곤 제거한다.
+    // 출발지점 - 목적지점 line
+    let polyline = new kakao.maps.Polyline({
+      map: krMap,
+      strokeWeight: 5,
+      strokeColor: '#FF00FF',
+      strokeOpacity: 0.8,
+      strokeStyle: 'solid',
+    });
 
     // 선 생성 및 거리 측정
     // 출발지점 생성
@@ -179,14 +182,18 @@ const Map = () => {
       imageOption
     );
     // 마커 정의
-    let SPmarker = new kakao.maps.Marker({ map: krMap, image: markerImage });
-    let EPmarker = new kakao.maps.Marker({ map: krMap, image: markerImage });
+
+    SPmarker = new kakao.maps.Marker({ map: krMap, image: markerImage });
+
+    // EPmarker.setMap(null);
+    SPmarker.setMap(null);
 
     const $startPoint = document.querySelector('#startPoint');
     const $removePoint = document.querySelector('#removePoint');
 
     let spFlag = false;
-    let startPointData = '';
+    // let startPointData;
+
     $startPoint.addEventListener('click', onChangeSpFlag);
     $removePoint.addEventListener('click', onRemovePoint);
 
@@ -219,11 +226,13 @@ const Map = () => {
 
         // 클릭한 위도, 경도 정보를 가져옵니다
         let latlng = mouseEvent.latLng;
-        startPointData = latlng;
+        console.log(latlng);
+        // startPointData = latlng;
 
         // // 마커 위치를 클릭한 위치로 옮깁니다
         SPmarker.setPosition(latlng);
         SPmarker.setMap(krMap);
+        setStartPoint(latlng);
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -236,20 +245,22 @@ const Map = () => {
     }
     krMap.setLevel(position.level);
     krMap.setCenter(position.center);
-    // console.log('cityCompany변화', cityCompany);
   }, [position, cityCompany]);
 
   useEffect(() => {
+    if (tempCountOverlay.length > 0) {
+      console.log(tempCountOverlay['CountOverlay']);
+      for (let i = 0; i < tempCountOverlay.length; i++) {
+        console.log(tempCountOverlay[i]['CountOverlay']);
+        tempCountOverlay[i]['CountOverlay'].setMap(null);
+      }
+      dispatch({
+        type: REMOVE_OVERLAY_SUCCESS,
+      });
+    }
     if (!(cityCompany && selectTown)) {
       return;
     }
-    // if (info) {
-    //   // console.log('info: ', info);
-    //   for (let i = 0; i < info.length; i++) {
-    //     info[i].close();
-    //   }
-    // }
-    // companyInfo setCompanyInfo
     if (companyInfo) {
       deleteInfo(companyInfo, setCompanyInfo);
     }
@@ -269,76 +280,19 @@ const Map = () => {
       companyMarkers,
       setCompanyMarker,
       companyInfo,
-      setCompanyInfo
+      setCompanyInfo,
+      startPoint,
+      krMap
     );
     console.log('marker: ', companyMarkers);
-  }, [cityCompany, selectTown]);
+  }, [cityCompany, selectTown, startPoint, EPmarker, tempCountOverlay]);
 
-  if (!(companyMarkers || companyInfo)) {
-    return;
-  }
-  console.log(krMap);
-  // 화면을 초기 값으로 초기화 한다.
-  // const $mapRerender = document.querySelector('#mapRerender');
+  // end Map
 
-  // $mapRerender.addEventListener('click', function () {
-  //   // setCenter();
-  //   deletePolygon(liPolygons);
-  //   deletePolygon(polygons);
-  //   if (companyMarkers) {
-  //     deleteMarker(companyMarkers, setCompanyMarker);
-  //   }
-
-  //   if (lenSw) {
-  //     DoData.forEach((val) => {
-  //       DoCoordinates = val.geometry.coordinates;
-  //       DoName = val.properties.CTP_ENG_NM;
-  //       stateDisplayArea(
-  //         DoCoordinates,
-  //         DoName,
-  //         polygons,
-  //         krMap,
-  //         customOverlay,
-  //         draggable,
-  //         liPolygons,
-  //         dispatch,
-  //         selectedState,
-  //         companyMarkers,
-  //         companyInfo,
-  //         cityCompany
-  //       );
-  //     });
-  //     lenSw = false;
-  //   }
-  // });
-
-  // function setCenter() {
-  //   // 이동할 위도 경도 위치를 생성합니다
-  //   var moveLatLon = new kakao.maps.LatLng(
-  //     36.6017606568142,
-  //     127.80702241209042
-  //   );
-  //   krMap.setLevel(13);
-  //   // 지도 중심을 이동 시킵니다
-  //   krMap.setCenter(moveLatLon);
-  // }
-
-  /**
-   * 폴리곤을 클릭시 생성된 폴리곤을 모두 지우는 함수.
-   * @param {*} polygons
-   */
-  const deletePolygon = (polygons) => {
-    for (let i = 0; i < polygons.length; i++) {
-      polygons[i].setMap(null);
-    }
-    polygons = [];
-    lenSw = true;
-  };
-
-  const onResetHandle = () => {
+  const onResetHandle = useCallback(() => {
     setRenderSwitch(true);
     console.log(set, lenSw);
-  };
+  }, []);
 
   return (
     <MapW>

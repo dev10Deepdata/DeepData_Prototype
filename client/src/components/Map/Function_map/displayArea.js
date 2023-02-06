@@ -8,7 +8,9 @@ import HJD from '../../../api/HJDL.json';
 import { createMarker, deleteMarker } from './markerHandle';
 import {
   CREATE_COMPANY_MARKER_REQUEST,
+  CREATE_COMPANY_OVERLAY_REQUEST,
   LOAD_COMPANY_DATA_REQUEST,
+  REMOVE_COMPANY_OVERLAY_REQUEST,
   SET_POSITION_REQUEST,
 } from '../../../reducers/mapControl';
 
@@ -26,7 +28,10 @@ export function stateDisplayArea(
   selectedState,
   markers,
   info,
-  cityCompany
+  cityCompany,
+  startPoint,
+  setStartPoint,
+  countOverlay
 ) {
   let path = [];
   let points = [];
@@ -113,7 +118,6 @@ export function stateDisplayArea(
       case 'Gyeongsangnam-do':
         draggable = true;
         map.setDraggable(draggable);
-        level = 11;
         setPositionCenter(
           11,
           new kakao.maps.LatLng(35.283006157310886, 128.33919530955006),
@@ -271,13 +275,15 @@ export function stateDisplayArea(
         selectedState,
         markers,
         info,
-        cityCompany
+        cityCompany,
+        startPoint,
+        countOverlay
       );
     });
   });
 }
 
-export function cityDisplayArea(
+export async function cityDisplayArea(
   coordinates,
   name,
   state,
@@ -290,7 +296,10 @@ export function cityDisplayArea(
   selectedState,
   markers,
   info,
-  cityCompany
+  cityCompany,
+  startPoint,
+  setStartPoint,
+  countOverlay
 ) {
   let path = [];
   let points = [];
@@ -360,15 +369,6 @@ export function cityDisplayArea(
     draggable = true;
     try {
       let region = code;
-      // const result = await axios.get(
-      //   `http://localhost:3066/data/loadwk/${region}`,
-      //   region
-      // );
-      // console.log(result);
-      // deleteMarker(markers);
-      // if (result.data.length > 0) {
-      //   createMarker(result.data, map, markers, name, info);
-      // }
       await dispatch({
         type: LOAD_COMPANY_DATA_REQUEST,
         data: {
@@ -376,7 +376,6 @@ export function cityDisplayArea(
         },
       });
       console.log('cityCompany [set]: ', cityCompany);
-      // deleteMarker(markers);
     } catch (err) {
       console.log(err);
     }
@@ -406,10 +405,13 @@ export function cityDisplayArea(
           draggable,
           dispatch,
           cityCompany,
-          info
+          info,
+          startPoint,
+          countOverlay
         );
       }
     });
+
     console.log('polygons', polygons);
     polygons.map((v) => {
       v.setOptions({
@@ -421,7 +423,7 @@ export function cityDisplayArea(
   });
 }
 
-export function townDisplayArea(
+export async function townDisplayArea(
   coordinates,
   name,
   liPolygons,
@@ -430,7 +432,10 @@ export function townDisplayArea(
   draggable,
   dispatch,
   cityCompany,
-  info
+  info,
+  startPoint,
+  setStartPoint,
+  countOverlays
 ) {
   let path = [];
   let points = [];
@@ -464,7 +469,33 @@ export function townDisplayArea(
 
   liPolygons.push(polygon);
 
-  const liCenterCoor = pointCentroid(points);
+  let CountOverlay = new kakao.maps.CustomOverlay({});
+  const liCenterCoor = pointCentroid(points); // 리 폴리곤의 중앙 좌표 정의
+  let count;
+  // count
+  try {
+    const divideCP = [];
+    const Company = await cityCompany.map((v) => {
+      console.log('v: ', v);
+      if (v['coAddr']['_text'].indexOf(name) !== -1) {
+        divideCP.push(v);
+      }
+    });
+    count = divideCP.length;
+
+    CountOverlay.setContent(`<div class="area">${count}</div>`);
+    CountOverlay.setPosition(liCenterCoor);
+    CountOverlay.setMap(map);
+  } catch (error) {
+    console.log(error);
+  }
+
+  dispatch({
+    type: CREATE_COMPANY_OVERLAY_REQUEST,
+    data: {
+      CountOverlay,
+    },
+  });
 
   // 다각형에 mouseover 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 변경합니다
   // 지역명을 표시하는 커스텀오버레이를 지도위에 표시합니다
@@ -472,11 +503,6 @@ export function townDisplayArea(
     polygon.setOptions({ fillColor: '#09f' });
     draggable = false;
     map.setDraggable(draggable);
-  });
-
-  // 다각형에 mousemove 이벤트를 등록하고 이벤트가 발생하면 커스텀 오버레이의 위치를 변경합니다
-  kakao.maps.event.addListener(polygon, 'mousemove', function (mouseEvent) {
-    customOverlay.setPosition(mouseEvent.latLng);
   });
 
   // 다각형에 mouseout 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 원래색으로 변경합니다
@@ -492,8 +518,6 @@ export function townDisplayArea(
   kakao.maps.event.addListener(polygon, 'click', async function (mouseEvent) {
     draggable = true;
     console.log('li name: ', name);
-    // console.log('cityCompany [set]: ', cityCompany);
-    // // deleteMarker(markers);
 
     map.setDraggable(draggable);
     if (info) {
@@ -508,6 +532,10 @@ export function townDisplayArea(
       data: {
         li: name,
       },
+    });
+
+    dispatch({
+      type: REMOVE_COMPANY_OVERLAY_REQUEST,
     });
 
     setPositionCenter(9, liCenterCoor, dispatch);
@@ -526,3 +554,13 @@ function setPositionCenter(level, coor, dispatch) {
     },
   });
 }
+
+// export const deleteMarker = (companyMarkers, setCompanyMarker) => {
+//   if (!(companyMarkers.length > 0)) {
+//     return;
+//   }
+//   for (let i = 0; i < companyMarkers.length; i++) {
+//     companyMarkers[i].setMap(null);
+//   }
+//   setCompanyMarker([]);
+// };

@@ -4,14 +4,19 @@ import {
   CREATE_COMPANY_MARKER_FAILURE,
   CREATE_COMPANY_MARKER_REQUEST,
   CREATE_COMPANY_MARKER_SUCCESS,
+  CREATE_COMPANY_OVERLAY_FAILURE,
+  CREATE_COMPANY_OVERLAY_REQUEST,
+  CREATE_COMPANY_OVERLAY_SUCCESS,
   LOAD_COMPANY_DATA_FAILURE,
   LOAD_COMPANY_DATA_REQUEST,
   LOAD_COMPANY_DATA_SUCCESS,
+  REMOVE_COMPANY_OVERLAY_FAILURE,
+  REMOVE_COMPANY_OVERLAY_REQUEST,
+  REMOVE_COMPANY_OVERLAY_SUCCESS,
   SET_POSITION_FAILURE,
   SET_POSITION_REQUEST,
   SET_POSITION_SUCCESS,
 } from '../reducers/mapControl';
-import { useSelector } from 'react-redux';
 
 // function setPositionAPI(data) {
 //   return axios.get(`post/${data}`);
@@ -76,6 +81,33 @@ function* createCompanyMarker(action) {
     });
   }
 }
+function* createCompanyOverlay(action) {
+  try {
+    yield put({
+      type: CREATE_COMPANY_OVERLAY_SUCCESS,
+      data: action.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: CREATE_COMPANY_OVERLAY_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+function* removeCompanyOverlay() {
+  try {
+    yield put({
+      type: REMOVE_COMPANY_OVERLAY_SUCCESS,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: REMOVE_COMPANY_OVERLAY_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
 
 // Event Listener와 비슷한 역할
 function* watchSetPosition() {
@@ -87,9 +119,17 @@ function* watchLoadCompanyData() {
 function* watchCreateCompanyMarkerData() {
   yield takeLatest(CREATE_COMPANY_MARKER_REQUEST, createCompanyMarker);
 }
+function* watchCreateCompanyOverlayData() {
+  yield takeLatest(CREATE_COMPANY_OVERLAY_REQUEST, createCompanyOverlay);
+}
+function* watchRemoveCompanyOverlayData() {
+  yield takeLatest(REMOVE_COMPANY_OVERLAY_REQUEST, removeCompanyOverlay);
+}
 
 export default function* dataSaga() {
   yield all([fork(watchSetPosition)]);
   yield all([fork(watchLoadCompanyData)]);
   yield all([fork(watchCreateCompanyMarkerData)]);
+  yield all([fork(watchCreateCompanyOverlayData)]);
+  yield all([fork(watchRemoveCompanyOverlayData)]);
 }
