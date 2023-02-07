@@ -367,6 +367,7 @@ export async function cityDisplayArea(
 
   kakao.maps.event.addListener(polygon, 'click', async function (mouseEvent) {
     draggable = true;
+    let company;
     try {
       let region = code;
       await dispatch({
@@ -375,6 +376,7 @@ export async function cityDisplayArea(
           region,
         },
       });
+      company = cityCompany;
       console.log('cityCompany [set]: ', cityCompany);
     } catch (err) {
       console.log(err);
@@ -383,7 +385,6 @@ export async function cityDisplayArea(
     map.setDraggable(draggable);
 
     let HjdData = HJD.features;
-
     let HjdCoordinates = [];
     let HjdName = '';
 
@@ -404,10 +405,11 @@ export async function cityDisplayArea(
           customOverlay,
           draggable,
           dispatch,
-          cityCompany,
+          company,
           info,
           startPoint,
-          countOverlay
+          countOverlay,
+          
         );
       }
     });
@@ -435,7 +437,8 @@ export async function townDisplayArea(
   info,
   startPoint,
   setStartPoint,
-  countOverlays
+  countOverlays,
+  
 ) {
   let path = [];
   let points = [];
@@ -469,31 +472,29 @@ export async function townDisplayArea(
 
   liPolygons.push(polygon);
 
-  let CountOverlay = new kakao.maps.CustomOverlay({});
-  const liCenterCoor = pointCentroid(points); // 리 폴리곤의 중앙 좌표 정의
-  let count;
-  // count
-  try {
-    const divideCP = [];
-    const Company = await cityCompany.map((v) => {
-      console.log('v: ', v);
-      if (v['coAddr']['_text'].indexOf(name) !== -1) {
-        divideCP.push(v);
-      }
-    });
-    count = divideCP.length;
+  // let CountOverlay = new kakao.maps.CustomOverlay({});
+  // const liCenterCoor = pointCentroid(points); // 리 폴리곤의 중앙 좌표 정의
 
-    CountOverlay.setContent(`<div class="area">${count}</div>`);
-    CountOverlay.setPosition(liCenterCoor);
-    CountOverlay.setMap(map);
-  } catch (error) {
-    console.log(error);
-  }
+  // CountOverlay.setContent(`<div class="area">${name}</div>`);
+
+  // CountOverlay.setContent();
+  // CountOverlay.setPosition(liCenterCoor);
+  // CountOverlay.setMap(map);
+
+  // dispatch({
+  //   type: CREATE_COMPANY_OVERLAY_REQUEST,
+  //   data: {
+  //     CountOverlay,
+  //   },
+  // });
+
+  const liCenterCoor = pointCentroid(points); // 리 폴리곤의 중앙 좌표 정의
 
   dispatch({
     type: CREATE_COMPANY_OVERLAY_REQUEST,
     data: {
-      CountOverlay,
+      name: name,
+      coor: liCenterCoor,
     },
   });
 

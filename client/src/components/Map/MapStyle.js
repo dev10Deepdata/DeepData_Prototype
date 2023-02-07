@@ -38,6 +38,16 @@ export const MapWrapper = styled.div`
       padding: 2px;
     }
   }
+  .custom-count-oevrlay {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(22, 255, 0, 0.2);
+    color: #243763;
+  }
 `;
 export const ButtonWrapper = styled.div`
   #mapControl {

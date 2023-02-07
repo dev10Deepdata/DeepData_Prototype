@@ -222,8 +222,6 @@ const Map = () => {
     kakao.maps.event.addListener(krMap, 'click', function (mouseEvent) {
       console.log('event: ', spFlag);
       if (spFlag) {
-        // console.log('SpSet');
-
         // 클릭한 위도, 경도 정보를 가져옵니다
         let latlng = mouseEvent.latLng;
         console.log(latlng);
@@ -238,7 +236,30 @@ const Map = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [krMap]);
 
-  // 맵 변화 감지
+  // 클러스터 생성 테스트
+  useEffect(() => {
+    if (!(countOverlay && cityCompany)) {
+      return;
+    }
+
+    console.log(countOverlay);
+    for (let i = 0; i < countOverlay.length; i++) {
+      const divideCP = [];
+      cityCompany.map((v) => {
+        if (v['coAddr']['_text'].indexOf(countOverlay[i]['name']) !== -1) {
+          divideCP.push(v);
+        }
+      });
+      console.log('why: ', countOverlay[i]['coor']);
+      let CountOverlay = new kakao.maps.CustomOverlay({});
+      CountOverlay.setContent(`<div class="custom-count-oevrlay">${divideCP.length}</div>`);
+      CountOverlay.setContent();
+      CountOverlay.setPosition(countOverlay[i]['coor']);
+      CountOverlay.setMap(krMap);
+    }
+  }, [countOverlay, cityCompany]);
+
+  // 폴리곤 클릭 레벨 변경
   useEffect(() => {
     if (!position) {
       return;

@@ -82,6 +82,7 @@ function* createCompanyMarker(action) {
   }
 }
 function* createCompanyOverlay(action) {
+  console.log('saga: ', action);
   try {
     yield put({
       type: CREATE_COMPANY_OVERLAY_SUCCESS,
