@@ -1,11 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
-import geojson from '../../api/TL_SCCO_SIG.json';
 import koreaDo from '../../api/korea_do_data.json';
-import koreaSi from '../../api/korea_si.json';
 import { deletePolygon } from './Function_map/kakaoMapApi';
-import EupMyeonDong from '../../api/HJD.json';
 
 import {
   MapW,
@@ -21,13 +17,23 @@ import {
   deleteInfo,
   deleteMarker,
 } from './Function_map/markerHandle';
-import { REMOVE_OVERLAY_SUCCESS } from '../../reducers/mapControl';
+import {
+  CREATE_CUSTOM_COMPANY_OVERLAY_SUCCESS,
+  REMOVE_OVERLAY_SUCCESS,
+} from '../../reducers/mapControl';
 
 const Map = () => {
   const { kakao } = window;
   const { selectedState } = useSelector((state) => state.data);
-  const { position, cityCompany, selectTown, countOverlay, tempCountOverlay } =
-    useSelector((state) => state.mapControl);
+  const {
+    position,
+    cityCompany,
+    selectTown,
+    countOverlay,
+    tempCountOverlay,
+    removeOverlay,
+    customCountOverlay,
+  } = useSelector((state) => state.mapControl);
   const dispatch = useDispatch();
 
   const [krMap, setKrMap] = useState(); // 카카오맵 저장
@@ -42,22 +48,6 @@ const Map = () => {
   let DoData = koreaDo.features; // 해당 구역 이름, 좌표 등
   let DoCoordinates = []; // 좌표 저장
   let DoName = ''; // 행정구 이름
-  let DoKoName = '';
-
-  // 시군구
-  let data = geojson.features; // 해당 구역 이름, 좌표 등
-  let coordinates = []; // 좌표 저장
-  let name = ''; // 행정구 이름
-
-  // 시군구
-  let SiData = koreaSi.features; // 해당 구역 이름, 좌표 등
-  let SiCoordinates = []; // 좌표 저장
-  let SiName = ''; // 행정구 이름
-
-  // 읍면동
-  let EmdData = EupMyeonDong.features; // 해당 구역 이름, 좌표 등
-  let EmdCoordinates = []; // 좌표 저장
-  let EmdName = ''; // 읍면동 이름
 
   // 폴리곤 보관
   let polygons = [];
@@ -93,7 +83,6 @@ const Map = () => {
     if (renderSwitch) {
       console.log(set, lenSw);
       setKrMap(new kakao.maps.Map(container, options));
-      setCustomOverlay(new kakao.maps.CustomOverlay({}));
       deletePolygon(liPolygons);
       deletePolygon(polygons);
       // if (companyMarkers) {
@@ -102,6 +91,16 @@ const Map = () => {
       if (companyMarkers || companyInfo) {
         deleteMarker(companyMarkers, setCompanyMarker);
         deleteInfo(companyInfo, setCompanyInfo);
+      }
+
+      if (customCountOverlay.length > 0) {
+        for (let i = 0; i < customCountOverlay.length; i++) {
+          console.log(customCountOverlay[i]);
+          customCountOverlay[i].setMap(null);
+        }
+        dispatch({
+          type: REMOVE_OVERLAY_SUCCESS,
+        });
       }
       DoData.forEach((val) => {
         DoCoordinates = val.geometry.coordinates;
@@ -220,7 +219,6 @@ const Map = () => {
     }
 
     kakao.maps.event.addListener(krMap, 'click', function (mouseEvent) {
-      console.log('event: ', spFlag);
       if (spFlag) {
         // 클릭한 위도, 경도 정보를 가져옵니다
         let latlng = mouseEvent.latLng;
@@ -241,8 +239,6 @@ const Map = () => {
     if (!(countOverlay && cityCompany)) {
       return;
     }
-
-    console.log(countOverlay);
     for (let i = 0; i < countOverlay.length; i++) {
       const divideCP = [];
       cityCompany.map((v) => {
@@ -250,12 +246,19 @@ const Map = () => {
           divideCP.push(v);
         }
       });
-      console.log('why: ', countOverlay[i]['coor']);
-      let CountOverlay = new kakao.maps.CustomOverlay({});
-      CountOverlay.setContent(`<div class="custom-count-oevrlay">${divideCP.length}</div>`);
-      CountOverlay.setContent();
-      CountOverlay.setPosition(countOverlay[i]['coor']);
-      CountOverlay.setMap(krMap);
+      if (divideCP.length !== 0) {
+        let CountOverlay = new kakao.maps.CustomOverlay({});
+        CountOverlay.setContent(
+          `<div class="custom-count-oevrlay">${divideCP.length}</div>`
+        );
+        CountOverlay.setContent();
+        CountOverlay.setPosition(countOverlay[i]['coor']);
+        CountOverlay.setMap(krMap);
+        dispatch({
+          type: CREATE_CUSTOM_COMPANY_OVERLAY_SUCCESS,
+          data: CountOverlay,
+        });
+      }
     }
   }, [countOverlay, cityCompany]);
 
@@ -269,16 +272,6 @@ const Map = () => {
   }, [position, cityCompany]);
 
   useEffect(() => {
-    if (tempCountOverlay.length > 0) {
-      console.log(tempCountOverlay['CountOverlay']);
-      for (let i = 0; i < tempCountOverlay.length; i++) {
-        console.log(tempCountOverlay[i]['CountOverlay']);
-        tempCountOverlay[i]['CountOverlay'].setMap(null);
-      }
-      dispatch({
-        type: REMOVE_OVERLAY_SUCCESS,
-      });
-    }
     if (!(cityCompany && selectTown)) {
       return;
     }
@@ -306,7 +299,22 @@ const Map = () => {
       krMap
     );
     console.log('marker: ', companyMarkers);
-  }, [cityCompany, selectTown, startPoint, EPmarker, tempCountOverlay]);
+  }, [cityCompany, selectTown, startPoint, EPmarker]);
+
+  // 기업카운터 제거
+  useEffect(() => {
+    if (removeOverlay) {
+      console.log(customCountOverlay);
+      // console.log(tempCountOverlay['CountOverlay']);
+      for (let i = 0; i < customCountOverlay.length; i++) {
+        console.log(customCountOverlay[i]);
+        customCountOverlay[i].setMap(null);
+      }
+      dispatch({
+        type: REMOVE_OVERLAY_SUCCESS,
+      });
+    }
+  }, [tempCountOverlay, customCountOverlay, removeOverlay]);
 
   // end Map
 

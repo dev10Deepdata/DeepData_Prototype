@@ -1,11 +1,8 @@
 import koreaSi from '../../../api/korea_si.json';
 import cityCode from '../../../api/city.json';
-import axios from 'axios';
-
 import { deletePolygon, pointCentroid } from './kakaoMapApi';
 import HJD from '../../../api/HJDL.json';
 
-import { createMarker, deleteMarker } from './markerHandle';
 import {
   CREATE_COMPANY_MARKER_REQUEST,
   CREATE_COMPANY_OVERLAY_REQUEST,
@@ -77,9 +74,9 @@ export function stateDisplayArea(
   });
 
   // 다각형에 mousemove 이벤트를 등록하고 이벤트가 발생하면 커스텀 오버레이의 위치를 변경합니다
-  kakao.maps.event.addListener(polygon, 'mousemove', function (mouseEvent) {
-    customOverlay.setPosition(mouseEvent.latLng);
-  });
+  // kakao.maps.event.addListener(polygon, 'mousemove', function (mouseEvent) {
+  //   customOverlay.setPosition(mouseEvent.latLng);
+  // });
 
   // 다각형에 mouseout 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 원래색으로 변경합니다
   // 커스텀 오버레이를 지도에서 제거합니다
@@ -88,14 +85,13 @@ export function stateDisplayArea(
     map.setDraggable(draggable);
 
     polygon.setOptions({ fillColor: '#fff' });
-    customOverlay.setMap(null);
+    // customOverlay.setMap(null);
   });
 
   let siData = koreaSi.features;
   // let selectCity;
 
   kakao.maps.event.addListener(polygon, 'click', function (mouseEvent) {
-    let level;
     switch (name) {
       case 'Gangwon-do':
         draggable = true;
@@ -258,6 +254,7 @@ export function stateDisplayArea(
     let selectCity = siData.filter((city) => city.properties.State === name);
     let cityCoordinates;
     let cityName;
+
     selectCity.forEach((city) => {
       cityCoordinates = city.geometry.coordinates;
       cityName = city.properties.SIG_KOR_NM;
@@ -303,7 +300,6 @@ export async function cityDisplayArea(
 ) {
   let path = [];
   let points = [];
-  console.log('name: ', name, ' state: ', state);
 
   // code 추출
   let code;
@@ -349,9 +345,9 @@ export async function cityDisplayArea(
   });
 
   //   // 다각형에 mousemove 이벤트를 등록하고 이벤트가 발생하면 커스텀 오버레이의 위치를 변경합니다
-  kakao.maps.event.addListener(polygon, 'mousemove', function (mouseEvent) {
-    customOverlay.setPosition(mouseEvent.latLng);
-  });
+  // kakao.maps.event.addListener(polygon, 'mousemove', function (mouseEvent) {
+  //   customOverlay.setPosition(mouseEvent.latLng);
+  // });
 
   //   // 다각형에 mouseout 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 원래색으로 변경합니다
   //   // 커스텀 오버레이를 지도에서 제거합니다
@@ -360,27 +356,29 @@ export async function cityDisplayArea(
     map.setDraggable(draggable);
 
     polygon.setOptions({ fillColor: '#fff' });
-    customOverlay.setMap(null);
+    // customOverlay.setMap(null);
   });
 
   const centerCoor = pointCentroid(points);
 
   kakao.maps.event.addListener(polygon, 'click', async function (mouseEvent) {
     draggable = true;
-    let company;
-    try {
-      let region = code;
-      await dispatch({
-        type: LOAD_COMPANY_DATA_REQUEST,
-        data: {
-          region,
-        },
-      });
-      company = cityCompany;
-      console.log('cityCompany [set]: ', cityCompany);
-    } catch (err) {
-      console.log(err);
-    }
+    // try {
+    let region = code;
+    dispatch({
+      type: LOAD_COMPANY_DATA_REQUEST,
+      data: {
+        region,
+      },
+    });
+    dispatch({
+      type: REMOVE_COMPANY_OVERLAY_REQUEST,
+    });
+    //   company = cityCompany;
+    //   console.log('cityCompany [set]: ', cityCompany);
+    // } catch (err) {
+    //   console.log(err);
+    // }
 
     map.setDraggable(draggable);
 
@@ -402,14 +400,9 @@ export async function cityDisplayArea(
           HjdName,
           liPolygons,
           map,
-          customOverlay,
           draggable,
           dispatch,
-          company,
-          info,
-          startPoint,
-          countOverlay,
-          
+          info
         );
       }
     });
@@ -430,15 +423,9 @@ export async function townDisplayArea(
   name,
   liPolygons,
   map,
-  customOverlay,
   draggable,
   dispatch,
-  cityCompany,
-  info,
-  startPoint,
-  setStartPoint,
-  countOverlays,
-  
+  info
 ) {
   let path = [];
   let points = [];
@@ -469,24 +456,7 @@ export async function townDisplayArea(
     fillColor: '#CDE990', // 채우기 색깔입니다
     fillOpacity: 0.2, // 채우기 불투명도 입니다
   });
-
   liPolygons.push(polygon);
-
-  // let CountOverlay = new kakao.maps.CustomOverlay({});
-  // const liCenterCoor = pointCentroid(points); // 리 폴리곤의 중앙 좌표 정의
-
-  // CountOverlay.setContent(`<div class="area">${name}</div>`);
-
-  // CountOverlay.setContent();
-  // CountOverlay.setPosition(liCenterCoor);
-  // CountOverlay.setMap(map);
-
-  // dispatch({
-  //   type: CREATE_COMPANY_OVERLAY_REQUEST,
-  //   data: {
-  //     CountOverlay,
-  //   },
-  // });
 
   const liCenterCoor = pointCentroid(points); // 리 폴리곤의 중앙 좌표 정의
 
@@ -497,9 +467,9 @@ export async function townDisplayArea(
       coor: liCenterCoor,
     },
   });
+  console.log('create overlay req!!');
 
   // 다각형에 mouseover 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 변경합니다
-  // 지역명을 표시하는 커스텀오버레이를 지도위에 표시합니다
   kakao.maps.event.addListener(polygon, 'mouseover', function (mouseEvent) {
     polygon.setOptions({ fillColor: '#09f' });
     draggable = false;
@@ -507,22 +477,19 @@ export async function townDisplayArea(
   });
 
   // 다각형에 mouseout 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 원래색으로 변경합니다
-  // 커스텀 오버레이를 지도에서 제거합니다
   kakao.maps.event.addListener(polygon, 'mouseout', function () {
     draggable = true;
     map.setDraggable(draggable);
-
     polygon.setOptions({ fillColor: '#CDE990' });
-    customOverlay.setMap(null);
+    // customOverlay.setMap(null);
   });
 
   kakao.maps.event.addListener(polygon, 'click', async function (mouseEvent) {
     draggable = true;
-    console.log('li name: ', name);
 
+    // 열려 있는 인포 제거
     map.setDraggable(draggable);
     if (info) {
-      // console.log('info: ', info);
       for (let i = 0; i < info.length; i++) {
         info[i].close();
       }
@@ -534,15 +501,11 @@ export async function townDisplayArea(
         li: name,
       },
     });
-
     dispatch({
       type: REMOVE_COMPANY_OVERLAY_REQUEST,
     });
 
     setPositionCenter(9, liCenterCoor, dispatch);
-
-    // console.log('displayArea', typeof liPolygons);
-    // deletePolygon(liPolygons);
   });
 }
 
@@ -555,13 +518,3 @@ function setPositionCenter(level, coor, dispatch) {
     },
   });
 }
-
-// export const deleteMarker = (companyMarkers, setCompanyMarker) => {
-//   if (!(companyMarkers.length > 0)) {
-//     return;
-//   }
-//   for (let i = 0; i < companyMarkers.length; i++) {
-//     companyMarkers[i].setMap(null);
-//   }
-//   setCompanyMarker([]);
-// };

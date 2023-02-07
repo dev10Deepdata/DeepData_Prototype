@@ -6,7 +6,9 @@ export const initialState = {
   cityCompany: null,
   selectTown: null,
   countOverlay: [],
+  customCountOverlay: [],
   tempCountOverlay: [],
+  removeOverlay: false,
   setPositionLoading: null,
   setPositionDone: null,
   setPositionError: null,
@@ -27,8 +29,6 @@ export const initialState = {
   removeOverlayError: null,
 };
 
-const { kakao } = window;
-
 export const SET_POSITION_REQUEST = 'SET_POSITION_REQUEST';
 export const SET_POSITION_SUCCESS = 'SET_POSITION_SUCCESS';
 export const SET_POSITION_FAILURE = 'SET_POSITION_FAILURE';
@@ -43,6 +43,8 @@ export const CREATE_COMPANY_MARKER_FAILURE = 'CREATE_COMPANY_MAKER_FAILURE';
 
 export const CREATE_COMPANY_OVERLAY_REQUEST = 'CREATE_COMPANY_OVERLAY_REQUEST';
 export const CREATE_COMPANY_OVERLAY_SUCCESS = 'CREATE_COMPANY_OVERLAY_SUCCESS';
+export const CREATE_CUSTOM_COMPANY_OVERLAY_SUCCESS =
+  'CREATE_CUSTOM_COMPANY_OVERLAY_SUCCESS';
 export const CREATE_COMPANY_OVERLAY_FAILURE = 'CREATE_COMPANY_OVERLAY_FAILURE';
 
 export const REMOVE_COMPANY_OVERLAY_REQUEST = 'REMOVE_COMPANY_OVERLAY_REQUEST';
@@ -108,6 +110,9 @@ const reducer = (state = initialState, action) => {
         draft.createCompanyOverlayDone = true;
         draft.countOverlay.push(action.data);
         break;
+      case CREATE_CUSTOM_COMPANY_OVERLAY_SUCCESS:
+        draft.customCountOverlay.push(action.data);
+        break;
       case CREATE_COMPANY_OVERLAY_FAILURE:
         draft.createCompanyOverlayLoading = false;
         draft.createCompanyOverlayError = action.error;
@@ -121,12 +126,13 @@ const reducer = (state = initialState, action) => {
         draft.removeCompanyOverlayLoading = false;
         draft.removeCompanyOverlayDone = true;
         draft.tempCountOverlay = draft.countOverlay;
+        draft.removeOverlay = true;
         draft.countOverlay = [];
         break;
       case REMOVE_OVERLAY_SUCCESS:
-        draft.removeOverlayLoading = false;
-        draft.removeOverlayDone = true;
+        draft.removeOverlay = false;
         draft.tempCountOverlay = [];
+        draft.customCountOverlay = [];
         break;
       case REMOVE_COMPANY_OVERLAY_FAILURE:
         draft.removeCompanyOverlayLoading = false;
