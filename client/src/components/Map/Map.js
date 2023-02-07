@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import koreaDo from '../../api/korea_do_data.json';
 import { deletePolygon } from './Function_map/kakaoMapApi';
-
 import {
   MapW,
   MapWrapper,
@@ -10,7 +9,6 @@ import {
   PointInfoWrapper,
   InfoWrapper,
 } from './MapStyle';
-
 import { stateDisplayArea } from './Function_map/displayArea';
 import {
   createMarker,
@@ -24,7 +22,6 @@ import {
 
 const Map = () => {
   const { kakao } = window;
-  const { selectedState } = useSelector((state) => state.data);
   const {
     position,
     cityCompany,
@@ -37,7 +34,6 @@ const Map = () => {
   const dispatch = useDispatch();
 
   const [krMap, setKrMap] = useState(); // 카카오맵 저장
-  const [customOverlay, setCustomOverlay] = useState(); // 카카오맵 저장
 
   // 출발지점 저장
   const [startPoint, setStartPoint] = useState();
@@ -55,24 +51,12 @@ const Map = () => {
 
   const [renderSwitch, setRenderSwitch] = useState(false);
 
-  /**
-   * 초기값 false (화면 버튼을 눌러도 동작하지 않게 설정)
-   * 폴리곤 클릭시 true로 변경하여 화면 버튼을 활성화
-   * 화면 버튼 클릭시 false로 스위치
-   */
-  let lenSw = false;
-
-  // 데이터를 불러오는 작업이 중복 되지 않게 하는 flag변수
-  // let flag = true;
-
   // 폴리곤 내에서 드래그를 막고자 하는 변수
   let draggable = true;
 
   const [companyMarkers, setCompanyMarker] = useState([]);
-
   const [companyInfo, setCompanyInfo] = useState([]);
 
-  let set = false;
   // 카카오맵 초기 셋팅
   useEffect(() => {
     const container = document.getElementById('kakaoMap');
@@ -81,13 +65,10 @@ const Map = () => {
       level: 13,
     };
     if (renderSwitch) {
-      console.log(set, lenSw);
       setKrMap(new kakao.maps.Map(container, options));
       deletePolygon(liPolygons);
       deletePolygon(polygons);
-      // if (companyMarkers) {
-      //   deleteMarker(companyMarkers, setCompanyMarker);
-      // }
+
       if (companyMarkers || companyInfo) {
         deleteMarker(companyMarkers, setCompanyMarker);
         deleteInfo(companyInfo, setCompanyInfo);
@@ -110,17 +91,10 @@ const Map = () => {
           DoName,
           polygons,
           krMap,
-          customOverlay,
           draggable,
           liPolygons,
           dispatch,
-          selectedState,
-          companyMarkers,
-          companyInfo,
-          cityCompany,
-          startPoint,
-          setStartPoint,
-          countOverlay
+          companyInfo
         );
       });
       setRenderSwitch(false);
@@ -128,7 +102,6 @@ const Map = () => {
     }
 
     setKrMap(new kakao.maps.Map(container, options));
-    setCustomOverlay(new kakao.maps.CustomOverlay({}));
   }, [renderSwitch]);
 
   // 카카오맵 셋팅
@@ -146,17 +119,10 @@ const Map = () => {
         DoName,
         polygons,
         krMap,
-        customOverlay,
         draggable,
         liPolygons,
         dispatch,
-        selectedState,
-        companyMarkers,
-        companyInfo,
-        cityCompany,
-        startPoint,
-        setStartPoint,
-        countOverlay
+        companyInfo
       );
     });
 
@@ -234,16 +200,22 @@ const Map = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [krMap]);
 
-  // 클러스터 생성 테스트
+  // 클러스터 생성 테스트 // 수정 필요
   useEffect(() => {
     if (!(countOverlay && cityCompany)) {
       return;
     }
+    console.log('cityCompany', cityCompany);
     for (let i = 0; i < countOverlay.length; i++) {
       const divideCP = [];
       cityCompany.map((v) => {
-        if (v['coAddr']['_text'].indexOf(countOverlay[i]['name']) !== -1) {
-          divideCP.push(v);
+        try {
+          console.log('v', v['coAddr']['_text']);
+          if (v['coAddr']['_text'].indexOf(countOverlay[i]['name']) !== -1) {
+            divideCP.push(v);
+          }
+        } catch (error) {
+          console.log('no address');
         }
       });
       if (divideCP.length !== 0) {
@@ -320,7 +292,6 @@ const Map = () => {
 
   const onResetHandle = useCallback(() => {
     setRenderSwitch(true);
-    console.log(set, lenSw);
   }, []);
 
   return (

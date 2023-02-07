@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import CompanyCount from '../components/CompanyCount';
 import Map from '../components/Map/Map';
 
 const MainLayout = styled.div`
@@ -15,7 +14,7 @@ const MainLayout = styled.div`
   }
 `;
 const Title = styled.div`
-font-family: Hind_Siliguri_SemiBold;
+  font-family: Hind_Siliguri_SemiBold;
   font-size: 1.2rem;
   font-weight: 600;
   margin-left: 10px;
@@ -38,7 +37,6 @@ const MainPage = () => {
       <Title>Map</Title>
       <Map />
       <Title>Company Count</Title>
-      <CompanyCount />
     </MainLayout>
   );
 };

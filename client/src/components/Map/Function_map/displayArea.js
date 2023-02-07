@@ -18,17 +18,10 @@ export function stateDisplayArea(
   name,
   polygons,
   map,
-  customOverlay,
   draggable,
   liPolygons,
   dispatch,
-  selectedState,
-  markers,
   info,
-  cityCompany,
-  startPoint,
-  setStartPoint,
-  countOverlay
 ) {
   let path = [];
   let points = [];
@@ -47,7 +40,6 @@ export function stateDisplayArea(
     path.push(tempPath);
   });
 
-  // pointCentroid(points);
   // 구역 경계 생성
   let polygon;
   polygon = new kakao.maps.Polygon({
@@ -63,33 +55,22 @@ export function stateDisplayArea(
 
   polygons.push(polygon);
 
-  //
-
   // 다각형에 mouseover 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 변경합니다
-  // 지역명을 표시하는 커스텀오버레이를 지도위에 표시합니다
   kakao.maps.event.addListener(polygon, 'mouseover', function (mouseEvent) {
     polygon.setOptions({ fillColor: '#09f' });
     draggable = false;
     map.setDraggable(draggable);
   });
 
-  // 다각형에 mousemove 이벤트를 등록하고 이벤트가 발생하면 커스텀 오버레이의 위치를 변경합니다
-  // kakao.maps.event.addListener(polygon, 'mousemove', function (mouseEvent) {
-  //   customOverlay.setPosition(mouseEvent.latLng);
-  // });
-
   // 다각형에 mouseout 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 원래색으로 변경합니다
-  // 커스텀 오버레이를 지도에서 제거합니다
   kakao.maps.event.addListener(polygon, 'mouseout', function () {
     draggable = true;
     map.setDraggable(draggable);
 
     polygon.setOptions({ fillColor: '#fff' });
-    // customOverlay.setMap(null);
   });
 
   let siData = koreaSi.features;
-  // let selectCity;
 
   kakao.maps.event.addListener(polygon, 'click', function (mouseEvent) {
     switch (name) {
@@ -262,19 +243,12 @@ export function stateDisplayArea(
       cityDisplayArea(
         cityCoordinates,
         cityName,
-        name,
         polygons,
         map,
-        customOverlay,
         draggable,
         liPolygons,
         dispatch,
-        selectedState,
-        markers,
         info,
-        cityCompany,
-        startPoint,
-        countOverlay
       );
     });
   });
@@ -283,20 +257,13 @@ export function stateDisplayArea(
 export async function cityDisplayArea(
   coordinates,
   name,
-  state,
   polygons,
   map,
-  customOverlay,
   draggable,
   liPolygons,
   dispatch,
-  selectedState,
-  markers,
   info,
-  cityCompany,
-  startPoint,
-  setStartPoint,
-  countOverlay
+
 ) {
   let path = [];
   let points = [];
@@ -336,21 +303,14 @@ export async function cityDisplayArea(
 
   polygons.push(polygon);
 
-  //   // 다각형에 mouseover 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 변경합니다
-  //   // 지역명을 표시하는 커스텀오버레이를 지도위에 표시합니다
+  // 다각형에 mouseover 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 변경합니다
   kakao.maps.event.addListener(polygon, 'mouseover', function (mouseEvent) {
     polygon.setOptions({ fillColor: '#09f' });
     draggable = false;
     map.setDraggable(draggable);
   });
 
-  //   // 다각형에 mousemove 이벤트를 등록하고 이벤트가 발생하면 커스텀 오버레이의 위치를 변경합니다
-  // kakao.maps.event.addListener(polygon, 'mousemove', function (mouseEvent) {
-  //   customOverlay.setPosition(mouseEvent.latLng);
-  // });
-
-  //   // 다각형에 mouseout 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 원래색으로 변경합니다
-  //   // 커스텀 오버레이를 지도에서 제거합니다
+  // 다각형에 mouseout 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 원래색으로 변경합니다
   kakao.maps.event.addListener(polygon, 'mouseout', function () {
     draggable = true;
     map.setDraggable(draggable);
@@ -363,7 +323,7 @@ export async function cityDisplayArea(
 
   kakao.maps.event.addListener(polygon, 'click', async function (mouseEvent) {
     draggable = true;
-    // try {
+
     let region = code;
     dispatch({
       type: LOAD_COMPANY_DATA_REQUEST,
@@ -374,11 +334,6 @@ export async function cityDisplayArea(
     dispatch({
       type: REMOVE_COMPANY_OVERLAY_REQUEST,
     });
-    //   company = cityCompany;
-    //   console.log('cityCompany [set]: ', cityCompany);
-    // } catch (err) {
-    //   console.log(err);
-    // }
 
     map.setDraggable(draggable);
 
@@ -388,9 +343,9 @@ export async function cityDisplayArea(
 
     deletePolygon(liPolygons);
 
-    // center
     setPositionCenter(10, centerCoor, dispatch);
 
+    // 읍면동 생성
     HjdData.forEach((val) => {
       if (val.properties['sggnm'] === name) {
         HjdCoordinates = val.geometry.coordinates[0];
@@ -414,6 +369,7 @@ export async function cityDisplayArea(
         strokeOpacity: 0.7,
         fillOpacity: 0.1,
       });
+      return 0;
     });
   });
 }
@@ -445,7 +401,6 @@ export async function townDisplayArea(
   });
   // 구역 경계 생성
   let polygon;
-
   polygon = new kakao.maps.Polygon({
     map: map,
     path: path, // 그려질 다각형의 좌표 배열입니다
@@ -457,7 +412,6 @@ export async function townDisplayArea(
     fillOpacity: 0.2, // 채우기 불투명도 입니다
   });
   liPolygons.push(polygon);
-
   const liCenterCoor = pointCentroid(points); // 리 폴리곤의 중앙 좌표 정의
 
   dispatch({
@@ -467,7 +421,6 @@ export async function townDisplayArea(
       coor: liCenterCoor,
     },
   });
-  console.log('create overlay req!!');
 
   // 다각형에 mouseover 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 변경합니다
   kakao.maps.event.addListener(polygon, 'mouseover', function (mouseEvent) {
@@ -475,19 +428,17 @@ export async function townDisplayArea(
     draggable = false;
     map.setDraggable(draggable);
   });
-
   // 다각형에 mouseout 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 원래색으로 변경합니다
   kakao.maps.event.addListener(polygon, 'mouseout', function () {
     draggable = true;
     map.setDraggable(draggable);
     polygon.setOptions({ fillColor: '#CDE990' });
-    // customOverlay.setMap(null);
   });
 
   kakao.maps.event.addListener(polygon, 'click', async function (mouseEvent) {
     draggable = true;
 
-    // 열려 있는 인포 제거
+    // 현재 열려 있는 인포창 닫기
     map.setDraggable(draggable);
     if (info) {
       for (let i = 0; i < info.length; i++) {
@@ -504,7 +455,6 @@ export async function townDisplayArea(
     dispatch({
       type: REMOVE_COMPANY_OVERLAY_REQUEST,
     });
-
     setPositionCenter(9, liCenterCoor, dispatch);
   });
 }

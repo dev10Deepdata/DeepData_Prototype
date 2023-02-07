@@ -29,7 +29,7 @@ const Wrapper = styled.div`
     margin-top: 50px;
   }
   p {
-    color: #A3C7D6;
+    color: #a3c7d6;
     font-family: Hind_Siliguri_Light;
     margin-bottom: 50px;
   }

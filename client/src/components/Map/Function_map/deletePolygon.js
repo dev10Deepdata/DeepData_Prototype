@@ -7,7 +7,6 @@ const deletePolygon = (polygons) => {
     polygons[i].setMap(null);
   }
   polygons = [];
-  // lenSw = true;
 };
 
 export default deletePolygon;

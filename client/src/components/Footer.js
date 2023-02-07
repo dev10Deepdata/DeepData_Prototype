@@ -42,19 +42,16 @@ const ContactIcon = styled.img`
   margin-right: 5px;
 `;
 
+const infoText =
+  '공공데이터포털의 OpenAPI데이터 활용 및 카카오맵 API를 활용한 웹 어플리케이션으로 OpenAPI의 기업정보 데이터를 활용하여 카카오맵에 기업의 위치를 마커하고 마커에 기업정보를 담아 정보를 제공 한다. 사전 유저 정보를 통하여 접속한 유저가 관심을 가질만한 기업을 추천해주고, 접속한 유저들의 정보를 통해 연령, 성별 등을 기준으로 통계를 제공한다.';
+
 const Footer = () => {
   return (
     <FooterWraper>
       <Section>
         <Title>DeepData</Title>
         <TitleLine />
-        <p>
-          공공데이터포털의 OpenAPI데이터 활용 및 카카오맵 API를 활용한 웹
-          어플리케이션으로 OpenAPI의 기업정보 데이터를 활용하여 카카오맵에
-          기업의 위치를 마커하고 마커에 기업정보를 담아 정보를 제공 한다. 사전
-          유저 정보를 통하여 접속한 유저가 관심을 가질만한 기업을 추천해주고,
-          접속한 유저들의 정보를 통해 연령, 성별 등을 기준으로 통계를 제공한다.
-        </p>
+        <p>{`${infoText}`}</p>
       </Section>
       <Section>
         <Title>Product</Title>

@@ -2,16 +2,9 @@ import produce from '../utils/produce';
 
 export const initialState = {
   me: null,
-  cnData: null,
-  selectedState: null,
-  selectedCityCP: null,
   joinLoading: false,
   joinDone: false,
   joinError: null,
-
-  cnDataLoadLoading: false,
-  cnDataLoadDone: false,
-  cnDataLoadError: null,
   saveDataLoading: false,
   saveDataDone: false,
   saveDataError: null,
@@ -20,11 +13,6 @@ export const initialState = {
 export const JOIN_REQUEST = 'JOIN_REQUEST';
 export const JOIN_SUCCESS = 'JOIN_SUCCESS';
 export const JOIN_FAILURE = 'JOIN_FAILURE';
-
-
-export const CN_DATA_LOAD_REQUEST = 'CN_DATA_LOAD_REQUEST';
-export const CN_DATA_LOAD_SUCCESS = 'CN_DATA_LOAD_SUCCESS';
-export const CN_DATA_LOAD_FAILURE = 'CN_DATA_LOAD_FAILURE';
 
 export const SAVE_DATA_REQUEST = 'SAVE_DATA_REQUEST';
 export const SAVE_DATA_SUCCESS = 'SAVE_DATA_SUCCESS';
@@ -48,23 +36,6 @@ const reducer = (state = initialState, action) => {
         draft.joinLoading = false;
         draft.joinError = action.error;
         break;
-     
-
-      case CN_DATA_LOAD_REQUEST:
-        draft.cnDataLoadLoading = true;
-        draft.cnDataLoadDone = false;
-        draft.cnDataLoadError = null;
-        break;
-      case CN_DATA_LOAD_SUCCESS:
-        draft.cnDataLoadLoading = false;
-        draft.cnDataLoadDone = true;
-        draft.cnData = action.data;
-        // action.data['CnDivision'].map((v) => draft.cnData.push());
-        break;
-      case CN_DATA_LOAD_FAILURE:
-        draft.cnDataLoadLoading = false;
-        draft.cnDataLoadError = action.error;
-        break;
       case SAVE_DATA_REQUEST:
         draft.saveDataLoading = true;
         draft.saveDataDone = false;
@@ -73,8 +44,6 @@ const reducer = (state = initialState, action) => {
       case SAVE_DATA_SUCCESS:
         draft.saveDataLoading = false;
         draft.saveDataDone = true;
-        // draft.saveDataction.data;
-        // action.data['CnDivision'].map((v) => draft.cnData.push());
         console.log('saveData: ', action.data);
         alert('success');
         break;
