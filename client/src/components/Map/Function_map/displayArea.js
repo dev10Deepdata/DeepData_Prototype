@@ -1,3 +1,4 @@
+import react from 'react';
 import koreaSi from '../../../api/korea_si.json';
 import cityCode from '../../../api/city.json';
 import { deletePolygon, pointCentroid } from './kakaoMapApi';
@@ -13,19 +14,17 @@ import {
 
 const { kakao } = window;
 
-export function stateDisplayArea(
+export const stateDisplayArea = (
   coordinates,
   name,
   polygons,
   map,
-  draggable,
   liPolygons,
   dispatch,
-  info,
-) {
+  info
+) => {
   let path = [];
   let points = [];
-
   coordinates.forEach((v) => {
     let tempPath = [];
     let tempPoint = [];
@@ -58,15 +57,10 @@ export function stateDisplayArea(
   // 다각형에 mouseover 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 변경합니다
   kakao.maps.event.addListener(polygon, 'mouseover', function (mouseEvent) {
     polygon.setOptions({ fillColor: '#09f' });
-    draggable = false;
-    map.setDraggable(draggable);
   });
 
   // 다각형에 mouseout 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 원래색으로 변경합니다
   kakao.maps.event.addListener(polygon, 'mouseout', function () {
-    draggable = true;
-    map.setDraggable(draggable);
-
     polygon.setOptions({ fillColor: '#fff' });
   });
 
@@ -75,8 +69,6 @@ export function stateDisplayArea(
   kakao.maps.event.addListener(polygon, 'click', function (mouseEvent) {
     switch (name) {
       case 'Gangwon-do':
-        draggable = true;
-        map.setDraggable(draggable);
         setPositionCenter(
           11,
           new kakao.maps.LatLng(37.73919895548271, 128.22828117457084),
@@ -84,8 +76,6 @@ export function stateDisplayArea(
         );
         break;
       case 'Gyeonggi-do':
-        draggable = true;
-        map.setDraggable(draggable);
         setPositionCenter(
           11,
           new kakao.maps.LatLng(37.53757927947221, 127.20134382044043),
@@ -93,8 +83,6 @@ export function stateDisplayArea(
         );
         break;
       case 'Gyeongsangnam-do':
-        draggable = true;
-        map.setDraggable(draggable);
         setPositionCenter(
           11,
           new kakao.maps.LatLng(35.283006157310886, 128.33919530955006),
@@ -102,8 +90,6 @@ export function stateDisplayArea(
         );
         break;
       case 'Gyeongsangbuk-do':
-        draggable = true;
-        map.setDraggable(draggable);
         setPositionCenter(
           11,
           new kakao.maps.LatLng(36.25873330451512, 128.85702005272682),
@@ -111,8 +97,6 @@ export function stateDisplayArea(
         );
         break;
       case 'Gwangju':
-        draggable = true;
-        map.setDraggable(draggable);
         setPositionCenter(
           9,
           new kakao.maps.LatLng(35.14322929166207, 126.85227509851431),
@@ -120,8 +104,6 @@ export function stateDisplayArea(
         );
         break;
       case 'Daegu':
-        draggable = true;
-        map.setDraggable(draggable);
         setPositionCenter(
           9,
           new kakao.maps.LatLng(35.83491559340961, 128.58213935896225),
@@ -129,8 +111,6 @@ export function stateDisplayArea(
         );
         break;
       case 'Daejeon':
-        draggable = true;
-        map.setDraggable(draggable);
         setPositionCenter(
           9,
           new kakao.maps.LatLng(36.32269483677606, 127.38968701671737),
@@ -138,8 +118,6 @@ export function stateDisplayArea(
         );
         break;
       case 'Busan':
-        draggable = true;
-        map.setDraggable(draggable);
         setPositionCenter(
           9,
           new kakao.maps.LatLng(35.20262044191565, 129.0195029126348),
@@ -147,8 +125,6 @@ export function stateDisplayArea(
         );
         break;
       case 'Seoul':
-        draggable = true;
-        map.setDraggable(draggable);
         setPositionCenter(
           9,
           new kakao.maps.LatLng(37.55300422304861, 127.01206388620648),
@@ -156,8 +132,6 @@ export function stateDisplayArea(
         );
         break;
       case 'Sejong-si':
-        draggable = true;
-        map.setDraggable(draggable);
         setPositionCenter(
           9,
           new kakao.maps.LatLng(36.584391383316586, 127.2207973037805),
@@ -165,8 +139,6 @@ export function stateDisplayArea(
         );
         break;
       case 'Ulsan':
-        draggable = true;
-        map.setDraggable(draggable);
         setPositionCenter(
           9,
           new kakao.maps.LatLng(35.54565177650688, 129.23870238065314),
@@ -174,8 +146,6 @@ export function stateDisplayArea(
         );
         break;
       case 'Incheon':
-        draggable = true;
-        map.setDraggable(draggable);
         setPositionCenter(
           10,
           new kakao.maps.LatLng(37.50133410083853, 126.5321865078648),
@@ -183,8 +153,6 @@ export function stateDisplayArea(
         );
         break;
       case 'Jellanam-do':
-        draggable = true;
-        map.setDraggable(draggable);
         setPositionCenter(
           11,
           new kakao.maps.LatLng(34.914873311403966, 127.01096488698131),
@@ -192,8 +160,6 @@ export function stateDisplayArea(
         );
         break;
       case 'Jeollabuk-do':
-        draggable = true;
-        map.setDraggable(draggable);
         setPositionCenter(
           11,
           new kakao.maps.LatLng(35.68316104761558, 127.14398551596905),
@@ -201,8 +167,6 @@ export function stateDisplayArea(
         );
         break;
       case 'Jeju-do':
-        draggable = true;
-        map.setDraggable(draggable);
         setPositionCenter(
           10,
           new kakao.maps.LatLng(33.37008097412234, 126.54587022000568),
@@ -210,8 +174,6 @@ export function stateDisplayArea(
         );
         break;
       case 'Chungcheongnam-do':
-        draggable = true;
-        map.setDraggable(draggable);
         setPositionCenter(
           11,
           new kakao.maps.LatLng(36.53450947749846, 126.87683044222051),
@@ -219,8 +181,6 @@ export function stateDisplayArea(
         );
         break;
       case 'Chungcheongbuk-do':
-        draggable = true;
-        map.setDraggable(draggable);
         setPositionCenter(
           11,
           new kakao.maps.LatLng(36.75755940408185, 127.74952230420188),
@@ -245,25 +205,22 @@ export function stateDisplayArea(
         cityName,
         polygons,
         map,
-        draggable,
         liPolygons,
         dispatch,
-        info,
+        info
       );
     });
   });
-}
+};
 
 export async function cityDisplayArea(
   coordinates,
   name,
   polygons,
   map,
-  draggable,
   liPolygons,
   dispatch,
-  info,
-
+  info
 ) {
   let path = [];
   let points = [];
@@ -306,15 +263,10 @@ export async function cityDisplayArea(
   // 다각형에 mouseover 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 변경합니다
   kakao.maps.event.addListener(polygon, 'mouseover', function (mouseEvent) {
     polygon.setOptions({ fillColor: '#09f' });
-    draggable = false;
-    map.setDraggable(draggable);
   });
 
   // 다각형에 mouseout 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 원래색으로 변경합니다
   kakao.maps.event.addListener(polygon, 'mouseout', function () {
-    draggable = true;
-    map.setDraggable(draggable);
-
     polygon.setOptions({ fillColor: '#fff' });
     // customOverlay.setMap(null);
   });
@@ -322,7 +274,6 @@ export async function cityDisplayArea(
   const centerCoor = pointCentroid(points);
 
   kakao.maps.event.addListener(polygon, 'click', async function (mouseEvent) {
-    draggable = true;
 
     let region = code;
     dispatch({
@@ -335,7 +286,6 @@ export async function cityDisplayArea(
       type: REMOVE_COMPANY_OVERLAY_REQUEST,
     });
 
-    map.setDraggable(draggable);
 
     let HjdData = HJD.features;
     let HjdCoordinates = [];
@@ -355,7 +305,6 @@ export async function cityDisplayArea(
           HjdName,
           liPolygons,
           map,
-          draggable,
           dispatch,
           info
         );
@@ -374,12 +323,11 @@ export async function cityDisplayArea(
   });
 }
 
-export async function townDisplayArea(
+export function townDisplayArea(
   coordinates,
   name,
   liPolygons,
   map,
-  draggable,
   dispatch,
   info
 ) {
@@ -425,21 +373,15 @@ export async function townDisplayArea(
   // 다각형에 mouseover 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 변경합니다
   kakao.maps.event.addListener(polygon, 'mouseover', function (mouseEvent) {
     polygon.setOptions({ fillColor: '#09f' });
-    draggable = false;
-    map.setDraggable(draggable);
   });
   // 다각형에 mouseout 이벤트를 등록하고 이벤트가 발생하면 폴리곤의 채움색을 원래색으로 변경합니다
   kakao.maps.event.addListener(polygon, 'mouseout', function () {
-    draggable = true;
-    map.setDraggable(draggable);
     polygon.setOptions({ fillColor: '#CDE990' });
   });
 
-  kakao.maps.event.addListener(polygon, 'click', async function (mouseEvent) {
-    draggable = true;
+  kakao.maps.event.addListener(polygon, 'click', function (mouseEvent) {
 
     // 현재 열려 있는 인포창 닫기
-    map.setDraggable(draggable);
     if (info) {
       for (let i = 0; i < info.length; i++) {
         info[i].close();

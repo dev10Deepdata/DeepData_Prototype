@@ -40,41 +40,42 @@ const Map = () => {
   let SPmarker;
   let EPmarker;
 
-  // 도, 특별시, 광역시
-  let DoData = koreaDo.features; // 해당 구역 이름, 좌표 등
-  let DoCoordinates = []; // 좌표 저장
-  let DoName = ''; // 행정구 이름
-
   // 폴리곤 보관
   let polygons = [];
   let liPolygons = [];
 
-  const [renderSwitch, setRenderSwitch] = useState(false);
-
-  // 폴리곤 내에서 드래그를 막고자 하는 변수
-  let draggable = true;
+  const [renderSwitch, setRenderSwitch] = useState(true); // 첫 렌더링시 동작 할 수 있게
 
   const [companyMarkers, setCompanyMarker] = useState([]);
   const [companyInfo, setCompanyInfo] = useState([]);
 
   // 카카오맵 초기 셋팅
   useEffect(() => {
+    if (!renderSwitch) {
+      return;
+    }
     const container = document.getElementById('kakaoMap');
     const options = {
       center: new kakao.maps.LatLng(36.6017606568142, 127.80702241209042),
       level: 13,
     };
-    if (renderSwitch) {
-      setKrMap(new kakao.maps.Map(container, options));
-      deletePolygon(liPolygons);
-      deletePolygon(polygons);
-
+    // setKrMap(new kakao.maps.Map(container, options));
+    if (krMap) {
+      if (liPolygons || polygons) {
+        // 폴리곤 초기화
+        console.log('test1');
+        deletePolygon(liPolygons);
+        deletePolygon(polygons);
+      }
       if (companyMarkers || companyInfo) {
+        // 인포창, 마커 초기화
+        console.log('test2');
         deleteMarker(companyMarkers, setCompanyMarker);
         deleteInfo(companyInfo, setCompanyInfo);
       }
-
       if (customCountOverlay.length > 0) {
+        // 오버레이 초기화
+        console.log('test3');
         for (let i = 0; i < customCountOverlay.length; i++) {
           console.log(customCountOverlay[i]);
           customCountOverlay[i].setMap(null);
@@ -83,15 +84,16 @@ const Map = () => {
           type: REMOVE_OVERLAY_SUCCESS,
         });
       }
+      let DoData = koreaDo.features; // 해당 구역 이름, 좌표 등
       DoData.forEach((val) => {
-        DoCoordinates = val.geometry.coordinates;
-        DoName = val.properties.CTP_ENG_NM;
+        // 도, 특별시, 광역시
+        let DoCoordinates = val.geometry.coordinates;
+        let DoName = val.properties.CTP_ENG_NM;
         stateDisplayArea(
           DoCoordinates,
           DoName,
           polygons,
           krMap,
-          draggable,
           liPolygons,
           dispatch,
           companyInfo
@@ -100,32 +102,14 @@ const Map = () => {
       setRenderSwitch(false);
       return;
     }
-
     setKrMap(new kakao.maps.Map(container, options));
-  }, [renderSwitch]);
+  }, [renderSwitch, krMap]);
 
-  // 카카오맵 셋팅
+  // 출발지 - 목적지 코드 수정 필요
   useEffect(() => {
     if (!krMap) {
       return;
     }
-
-    // 도 새성
-    DoData.forEach((val) => {
-      DoCoordinates = val.geometry.coordinates;
-      DoName = val.properties.CTP_ENG_NM;
-      stateDisplayArea(
-        DoCoordinates,
-        DoName,
-        polygons,
-        krMap,
-        draggable,
-        liPolygons,
-        dispatch,
-        companyInfo
-      );
-    });
-
     // 출발지점 - 목적지점 line
     let polyline = new kakao.maps.Polyline({
       map: krMap,
@@ -134,7 +118,6 @@ const Map = () => {
       strokeOpacity: 0.8,
       strokeStyle: 'solid',
     });
-
     // 선 생성 및 거리 측정
     // 출발지점 생성
     // 출발지점 마커 이미지 정의
@@ -189,9 +172,7 @@ const Map = () => {
         // 클릭한 위도, 경도 정보를 가져옵니다
         let latlng = mouseEvent.latLng;
         console.log(latlng);
-        // startPointData = latlng;
-
-        // // 마커 위치를 클릭한 위치로 옮깁니다
+        // 마커 위치를 클릭한 위치로 옮깁니다
         SPmarker.setPosition(latlng);
         SPmarker.setMap(krMap);
         setStartPoint(latlng);
@@ -232,7 +213,7 @@ const Map = () => {
         });
       }
     }
-  }, [countOverlay, cityCompany]);
+  }, [countOverlay, cityCompany, dispatch]);
 
   // 폴리곤 클릭 레벨 변경
   useEffect(() => {
@@ -286,11 +267,11 @@ const Map = () => {
         type: REMOVE_OVERLAY_SUCCESS,
       });
     }
-  }, [tempCountOverlay, customCountOverlay, removeOverlay]);
-
+  }, [tempCountOverlay, customCountOverlay, removeOverlay, dispatch]);
   // end Map
 
   const onResetHandle = useCallback(() => {
+    setKrMap(null);
     setRenderSwitch(true);
   }, []);
 
