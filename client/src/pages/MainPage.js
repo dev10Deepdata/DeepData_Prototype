@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import CompanyList from '../components/CompanyList/CompanyList';
 import Map from '../components/Map/Map';
 
 const MainLayout = styled.div`
@@ -36,7 +37,8 @@ const MainPage = () => {
     <MainLayout>
       <Title>Map</Title>
       <Map />
-      <Title>Company Count</Title>
+      <Title>Company List</Title>
+      <CompanyList />
     </MainLayout>
   );
 };
