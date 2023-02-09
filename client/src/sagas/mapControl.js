@@ -10,6 +10,9 @@ import {
   LOAD_COMPANY_DATA_FAILURE,
   LOAD_COMPANY_DATA_REQUEST,
   LOAD_COMPANY_DATA_SUCCESS,
+  REMOVE_COMPANY_DATA_FAILURE,
+  REMOVE_COMPANY_DATA_REQUEST,
+  REMOVE_COMPANY_DATA_SUCCESS,
   REMOVE_COMPANY_OVERLAY_FAILURE,
   REMOVE_COMPANY_OVERLAY_REQUEST,
   REMOVE_COMPANY_OVERLAY_SUCCESS,
@@ -39,13 +42,11 @@ function* setPosition(action) {
 }
 
 function loadCompanyDataAPI(data) {
-  console.log('loadApi datal: ', data);
   return axios.get(`http://localhost:3066/data/loadwk/${data.region}`, data);
 }
 
 function* loadComapnyData(action) {
   try {
-    console.log('loadwkSaga');
     const result = yield call(loadCompanyDataAPI, action.data);
     yield put({
       type: LOAD_COMPANY_DATA_SUCCESS,
@@ -55,6 +56,20 @@ function* loadComapnyData(action) {
     console.error(err);
     yield put({
       type: LOAD_COMPANY_DATA_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* removeComapnyData() {
+  try {
+    yield put({
+      type: REMOVE_COMPANY_DATA_SUCCESS,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: REMOVE_COMPANY_DATA_FAILURE,
       error: err.response.data,
     });
   }
@@ -116,6 +131,9 @@ function* watchSetPosition() {
 function* watchLoadCompanyData() {
   yield takeLatest(LOAD_COMPANY_DATA_REQUEST, loadComapnyData);
 }
+function* watchRemoveCompanyData() {
+  yield takeLatest(REMOVE_COMPANY_DATA_REQUEST, removeComapnyData);
+}
 function* watchCreateCompanyMarkerData() {
   yield takeLatest(CREATE_COMPANY_MARKER_REQUEST, createCompanyMarker);
 }
@@ -129,6 +147,7 @@ function* watchRemoveCompanyOverlayData() {
 export default function* dataSaga() {
   yield all([fork(watchSetPosition)]);
   yield all([fork(watchLoadCompanyData)]);
+  yield all([fork(watchRemoveCompanyData)]);
   yield all([fork(watchCreateCompanyMarkerData)]);
   yield all([fork(watchCreateCompanyOverlayData)]);
   yield all([fork(watchRemoveCompanyOverlayData)]);

@@ -17,6 +17,7 @@ import {
 } from './Function_map/markerHandle';
 import {
   CREATE_CUSTOM_COMPANY_OVERLAY_SUCCESS,
+  REMOVE_COMPANY_DATA_REQUEST,
   REMOVE_OVERLAY_SUCCESS,
 } from '../../reducers/mapControl';
 
@@ -45,7 +46,6 @@ const Map = () => {
   let liPolygons = [];
 
   const [renderSwitch, setRenderSwitch] = useState(true); // 첫 렌더링시 동작 할 수 있게
-
   const [companyMarkers, setCompanyMarker] = useState([]);
   const [companyInfo, setCompanyInfo] = useState([]);
 
@@ -54,34 +54,36 @@ const Map = () => {
     if (!renderSwitch) {
       return;
     }
+
     const container = document.getElementById('kakaoMap');
     const options = {
       center: new kakao.maps.LatLng(36.6017606568142, 127.80702241209042),
       level: 13,
     };
-    // setKrMap(new kakao.maps.Map(container, options));
     if (krMap) {
       if (liPolygons || polygons) {
         // 폴리곤 초기화
-        console.log('test1');
         deletePolygon(liPolygons);
         deletePolygon(polygons);
       }
       if (companyMarkers || companyInfo) {
         // 인포창, 마커 초기화
-        console.log('test2');
         deleteMarker(companyMarkers, setCompanyMarker);
         deleteInfo(companyInfo, setCompanyInfo);
       }
       if (customCountOverlay.length > 0) {
         // 오버레이 초기화
-        console.log('test3');
         for (let i = 0; i < customCountOverlay.length; i++) {
-          console.log(customCountOverlay[i]);
+          // console.log(customCountOverlay[i]);
           customCountOverlay[i].setMap(null);
         }
         dispatch({
           type: REMOVE_OVERLAY_SUCCESS,
+        });
+      }
+      if (cityCompany) {
+        dispatch({
+          type: REMOVE_COMPANY_DATA_REQUEST,
         });
       }
       let DoData = koreaDo.features; // 해당 구역 이름, 좌표 등
@@ -89,9 +91,11 @@ const Map = () => {
         // 도, 특별시, 광역시
         let DoCoordinates = val.geometry.coordinates;
         let DoName = val.properties.CTP_ENG_NM;
+        let KoName = val.properties.CTP_KOR_NM;
         stateDisplayArea(
           DoCoordinates,
           DoName,
+          KoName,
           polygons,
           krMap,
           liPolygons,
@@ -191,7 +195,7 @@ const Map = () => {
       const divideCP = [];
       cityCompany.map((v) => {
         try {
-          console.log('v', v['coAddr']['_text']);
+          // console.log('v', v['coAddr']['_text']);
           if (v['coAddr']['_text'].indexOf(countOverlay[i]['name']) !== -1) {
             divideCP.push(v);
           }
@@ -222,7 +226,7 @@ const Map = () => {
     }
     krMap.setLevel(position.level);
     krMap.setCenter(position.center);
-  }, [position, cityCompany]);
+  }, [position]);
 
   useEffect(() => {
     if (!(cityCompany && selectTown)) {

@@ -17,6 +17,7 @@ const { kakao } = window;
 export const stateDisplayArea = (
   coordinates,
   name,
+  koName,
   polygons,
   map,
   liPolygons,
@@ -192,14 +193,25 @@ export const stateDisplayArea = (
     }
 
     deletePolygon(polygons);
+    console.log('name', koName);
+
     let selectCity = siData.filter((city) => city.properties.State === name);
     let cityCoordinates;
     let cityName;
 
+    let stateCode = cityCode.cityCode.filter((v) => v.city_ko === koName);
+    let region = stateCode[0]['code'];
+    console.log('code: ', stateCode[0].code);
+    dispatch({
+      type: LOAD_COMPANY_DATA_REQUEST,
+      data: {
+        region,
+      },
+    });
+
     selectCity.forEach((city) => {
       cityCoordinates = city.geometry.coordinates;
       cityName = city.properties.SIG_KOR_NM;
-
       cityDisplayArea(
         cityCoordinates,
         cityName,
@@ -274,7 +286,6 @@ export async function cityDisplayArea(
   const centerCoor = pointCentroid(points);
 
   kakao.maps.event.addListener(polygon, 'click', async function (mouseEvent) {
-
     let region = code;
     dispatch({
       type: LOAD_COMPANY_DATA_REQUEST,
@@ -285,7 +296,6 @@ export async function cityDisplayArea(
     dispatch({
       type: REMOVE_COMPANY_OVERLAY_REQUEST,
     });
-
 
     let HjdData = HJD.features;
     let HjdCoordinates = [];
@@ -380,7 +390,6 @@ export function townDisplayArea(
   });
 
   kakao.maps.event.addListener(polygon, 'click', function (mouseEvent) {
-
     // 현재 열려 있는 인포창 닫기
     if (info) {
       for (let i = 0; i < info.length; i++) {

@@ -6,8 +6,8 @@ const ItemCompanyWrapper = styled.div`
   justify-content: space-between;
   padding-left: 10px;
   padding-right: 10px;
-  border: 2px solid #e2e2e2;
-  border-top: none;
+  border-bottom: 2px solid #e2e2e2;
+  /* border-top: none; */
   height: 130px;
 `;
 const AreaInfo = styled.div`
@@ -27,7 +27,7 @@ const AreaInfo = styled.div`
 `;
 const AreaCorp = styled.div`
   width: 30%;
-  .corpName {
+  .coName {
     font-size: 1.4rem;
     font-weight: 800;
   }
@@ -38,24 +38,24 @@ const AreaCorp = styled.div`
     cursor: pointer;
   }
 `;
-const ItemCompany = () => {
-  return (
+// 홈페이지 coHomePage
+const ItemCompany = ({ currentItems }) => {
+  console.log(currentItems);
+  return currentItems.map((v) => (
     <ItemCompanyWrapper>
       <AreaInfo>
-        <div className='sIndTpNm'>전문, 과학 및 기술 서비스업</div>
-        <div className='indTpNm'>
-          건축기술, 엔지니어링 및 기타 과학기술 서비스업
-        </div>
-        <div className='address'>강원 인제군 인제읍 덕산로20번길 94</div>
+        <div className='sIndTpNm'>{v.superIndTpNm._text}</div>
+        <div className='indTpNm'>{v.indTpNm._text}</div>
+        <div className='address'>{v.coAddr._text}</div>
       </AreaInfo>
       <AreaCorp>
-        <div className='corpName'>주식회사고려엔지니어링</div>
+        <div className='coName'>{v.coNm._text}</div>
         <div className='areaBtn'>
           <button>홈페이지</button>
         </div>
       </AreaCorp>
     </ItemCompanyWrapper>
-  );
+  ));
 };
 
 export default ItemCompany;
