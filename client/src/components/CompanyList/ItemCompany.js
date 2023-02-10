@@ -40,16 +40,16 @@ const AreaCorp = styled.div`
 `;
 // 홈페이지 coHomePage
 const ItemCompany = ({ currentItems }) => {
-  console.log(currentItems);
   return currentItems.map((v) => (
     <ItemCompanyWrapper>
       <AreaInfo>
-        <div className='sIndTpNm'>{v.superIndTpNm._text}</div>
-        <div className='indTpNm'>{v.indTpNm._text}</div>
-        <div className='address'>{v.coAddr._text}</div>
+        <div className='sIndTpNm'>
+          {v.superIndTpNm ? v.superIndTpNm._text : ''}
+        </div>
+        <div className='address'>{v.coAddr ? v.coAddr._text : ''}</div>
       </AreaInfo>
       <AreaCorp>
-        <div className='coName'>{v.coNm._text}</div>
+        <div className='coName'>{v.coNm ? v.coNm._text : ''}</div>
         <div className='areaBtn'>
           <button>홈페이지</button>
         </div>

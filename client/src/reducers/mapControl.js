@@ -98,7 +98,7 @@ const reducer = (state = initialState, action) => {
       case REMOVE_COMPANY_DATA_SUCCESS:
         draft.removeCompanyDataLoading = false;
         draft.removeCompanyDataDone = true;
-        draft.cityCompany = [];
+        draft.cityCompany = null;
         break;
       case REMOVE_COMPANY_DATA_FAILURE:
         draft.removeCompanyDataLoading = false;

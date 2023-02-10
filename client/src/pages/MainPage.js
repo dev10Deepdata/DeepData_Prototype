@@ -24,8 +24,6 @@ const Title = styled.div`
 `;
 const MainPage = () => {
   const navigate = useNavigate();
-  const { me } = useSelector((state) => state.data);
-  const { cityCompany } = useSelector((state) => state.mapControl);
 
   // store에 me의 유무를 확인 하고 me 가 없다면 인적사항 페이지로 이동
   // useEffect(() => {

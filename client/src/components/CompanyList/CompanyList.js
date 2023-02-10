@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
+import DataLoading from './DataLoading';
 import ItemCompany from './ItemCompany';
+import WaitingForm from './WaitingForm';
 
 const CompanyListWrapper = styled.div`
   border-radius: 10px;
   box-shadow: 0px 0px 12px 1px #555555;
+  overflow: hidden;
 `;
 const Header = styled.div`
   display: flex;
@@ -66,12 +69,15 @@ const Pagination = styled.div`
 `;
 
 const CompanyList = () => {
-  const { cityCompany } = useSelector((state) => state.mapControl);
+  const { cityCompany, loadCompanyDataLoading } = useSelector(
+    (state) => state.mapControl
+  );
 
   const pageRange = 10; // 화면에 나타날 페이지 갯수
   const totalItem = cityCompany ? cityCompany.length : ''; // 총 데이터의 갯수
   const limitItem = 10; // 한 페이지 당 나타낼 데이터의 갯수
   const totalPage = Math.ceil(totalItem / limitItem); // 총 페이지
+  const totalGroup = Math.ceil(totalPage / pageRange);
 
   const [page, setPage] = useState(1); // 현재 페이지
   const [pageGroup, setPageGroup] = useState(Math.ceil(page / pageRange));
@@ -123,34 +129,64 @@ const CompanyList = () => {
   const onClickPagination = (current) => {
     setPage(current);
   };
+  const onClickPageMove = (e) => {
+    console.log(e.target.outerText);
+    console.log('page: ', page);
+    console.log('pageGroup', pageGroup);
+    console.log('totalGroup', totalGroup);
+    if (e.target.outerText === '<') {
+      if (pageGroup !== 1) {
+        setPageGroup(pageGroup - 1);
+      }
+    } else if (e.target.outerText === '>') {
+      if (pageGroup !== totalGroup) {
+        setPageGroup(pageGroup + 1);
+      }
+    }
+  };
 
-  return cityCompany ? (
+  return (
     <CompanyListWrapper>
       <Header>
         <div className='title'>기업정보</div>
-        <div className='total'>{`총 ${cityCompany.length}건`}</div>
+        <div className='total'>{`총 ${
+          cityCompany ? cityCompany.length : 0
+        }건`}</div>
       </Header>
-      <ContentWrapper>
-        <ItemCompany currentItems={currentItems} />
-        <ContentBottom>
-          <Pagination>
-            <div className='moveBtn moveForward'>{'<'}</div>
-            {groupArr.map((v, i) => (
-              <div
-                className='num'
-                key={`${v}_${i}`}
-                onClick={() => onClickPagination(v)}
-              >
-                {v}
+
+      {cityCompany ? (
+        <ContentWrapper>
+          {loadCompanyDataLoading ? (
+            <DataLoading />
+          ) : (
+            <ItemCompany currentItems={currentItems} />
+          )}
+          <ContentBottom>
+            <Pagination>
+              <div className='moveBtn moveForward' onClick={onClickPageMove}>
+                {'<'}
               </div>
-            ))}
-            <div className='moveBtn moveBack'>{'>'}</div>
-          </Pagination>
-        </ContentBottom>
-      </ContentWrapper>
+              {groupArr.map((v, i) => (
+                <div
+                  className='num'
+                  key={`${v}_${i}`}
+                  onClick={() => onClickPagination(v)}
+                >
+                  {v}
+                </div>
+              ))}
+              <div className='moveBtn moveBack' onClick={onClickPageMove}>
+                {'>'}
+              </div>
+            </Pagination>
+          </ContentBottom>
+        </ContentWrapper>
+      ) : loadCompanyDataLoading ? (
+        <DataLoading />
+      ) : (
+        <WaitingForm />
+      )}
     </CompanyListWrapper>
-  ) : (
-    ''
   );
 };
 
