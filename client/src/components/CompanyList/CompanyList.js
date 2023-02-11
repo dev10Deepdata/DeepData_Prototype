@@ -129,27 +129,27 @@ const CompanyList = () => {
     setCurrentItems(currnetList);
   }, [cityCompany, firstNumber, page]);
 
-  const highlight = []; // 수정필요 useMemo 고려
-  // 페이지네이션 이동
-  const onClickPagination = useCallback(
-    (current, e) => {
-      highlight.map((v) => {
-        console.log(v.classList);
-        v.classList.remove('current');
-      });
-      highlight.length = 0;
-      highlight.push(e.target);
-      console.log(highlight);
-      e.target.classList.add('current');
-      setPage(current);
-    },
-    [highlight]
-  );
+  // 렌더링시 첫 번째 페이지 하이라이트
+  useEffect(() => {
+    let currnetList = document.querySelectorAll('.num');
+    if (currnetList.length > 0) {
+      console.log(typeof currnetList[0].innerText);
+      currnetList[0].classList.add('current');
+      setPage(parseInt(currnetList[0].innerText));
+    }
+  }, [groupArr]);
+
+  // 현재 페이지 하이라이트
+  const onClickPagination = (current, e) => {
+    let currnetList = document.querySelectorAll('.num');
+    for (let i = 0; i < currnetList.length; i++) {
+      currnetList[i].classList.remove('current');
+    }
+    e.target.classList.add('current');
+    setPage(current);
+  };
+
   const onClickPageMove = (e) => {
-    console.log(e.target.outerText);
-    console.log('page: ', page);
-    console.log('pageGroup', pageGroup);
-    console.log('totalGroup', totalGroup);
     if (e.target.outerText === '<') {
       if (pageGroup !== 1) {
         setPageGroup(pageGroup - 1);
