@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import DataLoading from './DataLoading';
@@ -66,6 +66,10 @@ const Pagination = styled.div`
     margin-right: 5px;
     cursor: pointer;
   }
+  .current {
+    font-weight: 600;
+    color: #3f979b;
+  }
 `;
 
 const CompanyList = () => {
@@ -125,10 +129,22 @@ const CompanyList = () => {
     setCurrentItems(currnetList);
   }, [cityCompany, firstNumber, page]);
 
+  const highlight = []; // 수정필요 useMemo 고려
   // 페이지네이션 이동
-  const onClickPagination = (current) => {
-    setPage(current);
-  };
+  const onClickPagination = useCallback(
+    (current, e) => {
+      highlight.map((v) => {
+        console.log(v.classList);
+        v.classList.remove('current');
+      });
+      highlight.length = 0;
+      highlight.push(e.target);
+      console.log(highlight);
+      e.target.classList.add('current');
+      setPage(current);
+    },
+    [highlight]
+  );
   const onClickPageMove = (e) => {
     console.log(e.target.outerText);
     console.log('page: ', page);
@@ -170,7 +186,7 @@ const CompanyList = () => {
                 <div
                   className='num'
                   key={`${v}_${i}`}
-                  onClick={() => onClickPagination(v)}
+                  onClick={(e) => onClickPagination(v, e)}
                 >
                   {v}
                 </div>
