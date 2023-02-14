@@ -40,8 +40,10 @@ const AreaCorp = styled.div`
 `;
 // 홈페이지 coHomePage
 const ItemCompany = ({ currentItems }) => {
-  return currentItems.map((v) => (
-    <ItemCompanyWrapper>
+  return currentItems.map((v, i) => (
+    <ItemCompanyWrapper
+      key={`${v.superIndTpNm ? v.superIndTpNm._text : 'a'}_${i}`}
+    >
       <AreaInfo>
         <div className='sIndTpNm'>
           {v.superIndTpNm ? v.superIndTpNm._text : ''}

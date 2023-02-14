@@ -133,7 +133,6 @@ const CompanyList = () => {
   useEffect(() => {
     let currnetList = document.querySelectorAll('.num');
     if (currnetList.length > 0) {
-      console.log(typeof currnetList[0].innerText);
       currnetList[0].classList.add('current');
       setPage(parseInt(currnetList[0].innerText));
     }

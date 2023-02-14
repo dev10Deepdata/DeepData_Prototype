@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { JOIN_REQUEST } from '../reducers/data';
+import AddInfo from '../components/UserInformation/AddInfo';
+import BasicInfo from '../components/UserInformation/BasicInfo';
 
 // styled
 const Layout = styled.div`
@@ -38,7 +40,7 @@ const Wrapper = styled.div`
   }
 
   form {
-    width: 80%;
+    width: 65%;
     margin-left: auto;
     margin-right: auto;
     display: flex;
@@ -48,22 +50,7 @@ const Wrapper = styled.div`
     justify-content: center;
     border-radius: 20px;
   }
-  select {
-    border: none;
-    border: 1px #000 solid;
-    width: 80%;
-    height: 40px;
-    border-radius: 10px;
-    text-align: center;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    cursor: pointer;
-
-    @media screen and (max-width: 767px) {
-      width: 90%;
-    }
-  }
-  button {
+  .Submit {
     border: none;
     color: #fff;
     font-size: 1rem;
@@ -71,7 +58,7 @@ const Wrapper = styled.div`
     background-color: #00337c;
     border-radius: 10px;
     border-bottom: 1px #000 solid;
-    width: 80%;
+    width: 100%;
     height: 40px;
     margin-top: 15px;
     margin-bottom: 5px;
@@ -81,6 +68,14 @@ const Wrapper = styled.div`
     }
   }
 `;
+const AddDisplay = styled.button`
+  margin-right: auto;
+  margin-top: 2px;
+  border: none;
+  border-radius: 6px;
+  height: 25px;
+`;
+
 // End styled
 
 /**
@@ -94,6 +89,12 @@ const JoinPage = () => {
   const { me } = useSelector((state) => state.data);
   const [gender, setGender] = useState('male');
   const [age, setAge] = useState('10');
+  const [state, setState] = useState('');
+  const [industry, setindustry] = useState('');
+  const [company, setCompany] = useState('');
+
+  const [display, setDisplay] = useState(false);
+  const onChangeDisplay = (display) => setDisplay(!display);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const onChangeAge = useCallback((e) => {
@@ -102,6 +103,18 @@ const JoinPage = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const onChangeGender = useCallback((e) => {
     setGender(e.target.value);
+  });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const onChangeState = useCallback((e) => {
+    setState(e.target.value);
+  });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const onChangeIndustry = useCallback((e) => {
+    setindustry(e.target.value);
+  });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const onChangeCompany = useCallback((company) => {
+    setCompany(company);
   });
 
   // store에 me가 담겨있으면 메인페이지로 이동
@@ -116,36 +129,47 @@ const JoinPage = () => {
    */
   const onSubmitForm = useCallback(
     (e) => {
+      console.log('gender', gender);
+      console.log('age', age);
+      console.log('state', state);
+      console.log('industry', industry);
+      console.log('company', company);
+
       e.preventDefault();
-      dispatch({
-        type: JOIN_REQUEST,
-        data: {
-          age,
-          gender,
-        },
-      });
+      // dispatch({
+      //   type: JOIN_REQUEST,
+      //   data: {
+      //     age,
+      //     gender,
+      //   },
+      // });
     },
-    [gender, age, dispatch]
+    [gender, age, state, industry, company, dispatch]
   );
   return (
     <Layout>
       <Wrapper>
         <h1>DeepData</h1>
         <form onSubmit={onSubmitForm}>
-          <select type='gender' onChange={onChangeGender}>
-            <option value='male'>남성</option>
-            <option value='female'>여성</option>
-          </select>
-          <select type='age' onChange={onChangeAge}>
-            <option value='10'>10대</option>
-            <option value='20'>20대</option>
-            <option value='30'>30대</option>
-            <option value='40'>40대</option>
-            <option value='50'>50대</option>
-            <option value='60'>60대</option>
-            <option value='70'>70대</option>
-          </select>
-          <button type='submit'>Go!</button>
+          <BasicInfo
+            onChangeGender={onChangeGender}
+            onChangeAge={onChangeAge}
+          />
+          <AddDisplay onClick={() => onChangeDisplay(display)}>
+            추가 정보 입력하기
+          </AddDisplay>
+          {display ? (
+            <AddInfo
+              onChangeState={onChangeState}
+              onChangeIndustry={onChangeIndustry}
+              onChangeCompany={onChangeCompany}
+            />
+          ) : (
+            ''
+          )}
+          <button className='Submit' type='submit'>
+            Go!
+          </button>
         </form>
         <p>Hello, Enter your information and Proceed.</p>
       </Wrapper>
