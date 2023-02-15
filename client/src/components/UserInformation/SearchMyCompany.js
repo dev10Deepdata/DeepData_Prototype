@@ -31,7 +31,7 @@ const Situation = styled.div`
   display: flex;
   border-radius: 10px;
   overflow: hidden;
-  margin: 10px 0px;
+  margin-top: 10px;
 
   .myCompany {
     width: 50%;
@@ -49,8 +49,10 @@ const Situation = styled.div`
 const TypingCompany = styled.div`
   display: flex;
   justify-content: space-between;
-  margin: 5px 0px;
-
+  margin-top: 10px;
+  margin-bottom: 5px;
+  height: ${(props) => (props.open ? '40px' : '0px')};
+  overflow: ${(props) => (props.open ? 'none' : 'hidden')};
   input {
     width: 70%;
     height: 40px;
@@ -93,8 +95,7 @@ const SearchMyCompany = ({ onChangeCompany }) => {
   const [searchMyCompany, setSearchMyCompany] = useState('');
   const [myCompany, setMyCompany] = useState('');
   const [searchList, setSearchList] = useState([]);
-  const [dispalyCompany, setDisplayCompany] = useState('');
-
+  const [open, setOpen] = useState(false);
   const handleCompany = useCallback((e) => {
     setSearchMyCompany(e.target.value);
   });
@@ -111,7 +112,6 @@ const SearchMyCompany = ({ onChangeCompany }) => {
       console.log(error);
     }
   };
-
   const displayCompanyName = (name) => {
     const $myCompany = document.querySelector('.myCompany');
     $myCompany.value = name;
@@ -119,6 +119,9 @@ const SearchMyCompany = ({ onChangeCompany }) => {
   const handleMyCompany = useCallback((e) => {
     setMyCompany(e.target.value);
   });
+  const onClickOpen = () => {
+    setOpen(true);
+  };
   return (
     <>
       <SearchContainer>
@@ -159,10 +162,10 @@ const SearchMyCompany = ({ onChangeCompany }) => {
 
       <Situation>
         <input className='myCompany' disabled />
-        <button>검색결과에 없는 경우</button>
+        <button onClick={onClickOpen}>검색결과에 없는 경우</button>
       </Situation>
 
-      <TypingCompany>
+      <TypingCompany open={open}>
         <input
           type='text'
           value={myCompany}

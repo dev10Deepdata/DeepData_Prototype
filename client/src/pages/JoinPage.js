@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
@@ -7,6 +8,9 @@ import AddInfo from '../components/UserInformation/AddInfo';
 import BasicInfo from '../components/UserInformation/BasicInfo';
 
 // styled
+const Dummy = styled.div`
+  height: 200px;
+`;
 const Layout = styled.div`
   text-align: center;
   width: 100%;
@@ -14,7 +18,6 @@ const Layout = styled.div`
   align-items: center;
   justify-content: center;
   overflow: hidden;
-
   position: absolute;
   top: 50%;
   transform: translate(0, -50%);
@@ -38,14 +41,12 @@ const Wrapper = styled.div`
   @media screen and (max-width: 767px) {
     width: 90%;
   }
-
   form {
     width: 65%;
     margin-left: auto;
     margin-right: auto;
     display: flex;
     flex-direction: column;
-
     align-items: center;
     justify-content: center;
     border-radius: 20px;
@@ -74,8 +75,16 @@ const AddDisplay = styled.button`
   border: none;
   border-radius: 6px;
   height: 25px;
+  background-color: #434242;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  :hover {
+    background-color: #222222;
+    color: #fff;
+    transition: all 0.35s;
+  }
 `;
-
 // End styled
 
 /**
@@ -96,23 +105,18 @@ const JoinPage = () => {
   const [display, setDisplay] = useState(false);
   const onChangeDisplay = (display) => setDisplay(!display);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const onChangeAge = useCallback((e) => {
     setAge(e.target.value);
   });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const onChangeGender = useCallback((e) => {
     setGender(e.target.value);
   });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const onChangeState = useCallback((e) => {
     setState(e.target.value);
   });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const onChangeIndustry = useCallback((e) => {
     setindustry(e.target.value);
   });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const onChangeCompany = useCallback((company) => {
     setCompany(company);
   });
@@ -134,46 +138,47 @@ const JoinPage = () => {
       console.log('state', state);
       console.log('industry', industry);
       console.log('company', company);
-
       e.preventDefault();
-      // dispatch({
-      //   type: JOIN_REQUEST,
-      //   data: {
-      //     age,
-      //     gender,
-      //   },
-      // });
+      dispatch({
+        type: JOIN_REQUEST,
+        data: {
+          age,
+          gender,
+        },
+      });
     },
     [gender, age, state, industry, company, dispatch]
   );
   return (
-    <Layout>
-      <Wrapper>
-        <h1>DeepData</h1>
-        <form onSubmit={onSubmitForm}>
-          <BasicInfo
-            onChangeGender={onChangeGender}
-            onChangeAge={onChangeAge}
-          />
-          <AddDisplay onClick={() => onChangeDisplay(display)}>
-            추가 정보 입력하기
-          </AddDisplay>
-          {display ? (
-            <AddInfo
-              onChangeState={onChangeState}
-              onChangeIndustry={onChangeIndustry}
-              onChangeCompany={onChangeCompany}
+    <Dummy>
+      <Layout>
+        <Wrapper>
+          <h1>DeepData</h1>
+          <form onSubmit={onSubmitForm}>
+            <BasicInfo
+              onChangeGender={onChangeGender}
+              onChangeAge={onChangeAge}
             />
-          ) : (
-            ''
-          )}
-          <button className='Submit' type='submit'>
-            Go!
-          </button>
-        </form>
-        <p>Hello, Enter your information and Proceed.</p>
-      </Wrapper>
-    </Layout>
+            <AddDisplay onClick={() => onChangeDisplay(display)}>
+              추가 정보 입력하기
+            </AddDisplay>
+            {display ? (
+              <AddInfo
+                onChangeState={onChangeState}
+                onChangeIndustry={onChangeIndustry}
+                onChangeCompany={onChangeCompany}
+              />
+            ) : (
+              ''
+            )}
+            <button className='Submit' type='submit'>
+              Go!
+            </button>
+          </form>
+          <p>Hello, Enter your information and Proceed.</p>
+        </Wrapper>
+      </Layout>
+    </Dummy>
   );
 };
 

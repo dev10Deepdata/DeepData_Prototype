@@ -4,6 +4,17 @@ import SearchMyCompany from './SearchMyCompany';
 
 const AddInfoContainer = styled.div`
   width: 100%;
+  button {
+    background-color: #635985;
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #393053;
+    transition: all 0.35s;
+  }
 `;
 const SelectInfo = styled.select`
   width: 100%;
