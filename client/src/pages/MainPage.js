@@ -23,14 +23,15 @@ const Title = styled.div`
   margin-bottom: 10px;
 `;
 const MainPage = () => {
+  const { me } = useSelector((state) => state.data);
   const navigate = useNavigate();
 
   // store에 me의 유무를 확인 하고 me 가 없다면 인적사항 페이지로 이동
-  // useEffect(() => {
-  //   if (!me) {
-  //     navigate('/');
-  //   }
-  // }, [me, navigate]);
+  useEffect(() => {
+    if (!me) {
+      navigate('/');
+    }
+  }, [me, navigate]);
 
   return (
     <MainLayout>

@@ -21,10 +21,15 @@ const SearchInput = styled.div`
     border: none;
   }
   button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 25%;
     height: 40px;
     border-radius: 10px;
     border: none;
+    background-color: #635985;
+    cursor: pointer;
   }
 `;
 const Situation = styled.div`
@@ -42,8 +47,14 @@ const Situation = styled.div`
     text-align: center;
   }
   button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #635985;
     height: 40px;
     width: 50%;
+
+    cursor: pointer;
   }
 `;
 const TypingCompany = styled.div`
@@ -62,6 +73,12 @@ const TypingCompany = styled.div`
     border-radius: 10px;
   }
   button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: #635985;
+
     width: 25%;
     height: 40px;
     border-radius: 10px;
@@ -79,6 +96,7 @@ const SearchItem = styled.div`
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
     cursor: pointer;
+    background-color: #635985;
   }
 `;
 const SearchList = styled.div`
@@ -132,7 +150,7 @@ const SearchMyCompany = ({ onChangeCompany }) => {
             onChange={handleCompany}
             placeholder='재직중인 회사 이름을 적으세요.'
           />
-          <button onClick={() => onClickSeach(searchMyCompany)}>
+          <button type='button' onClick={() => onClickSeach(searchMyCompany)}>
             기업 검색
           </button>
         </SearchInput>
@@ -144,6 +162,7 @@ const SearchMyCompany = ({ onChangeCompany }) => {
                 <SearchItem value={`${v.corpNm}`}>
                   <div className='companyName'>{`${v.corpNm} 설립일: ${v.enpEstbDt}`}</div>
                   <button
+                    type='button'
                     onClick={() => {
                       onChangeCompany(v.corpNm);
                       displayCompanyName(v.corpNm);
@@ -162,7 +181,9 @@ const SearchMyCompany = ({ onChangeCompany }) => {
 
       <Situation>
         <input className='myCompany' disabled />
-        <button onClick={onClickOpen}>검색결과에 없는 경우</button>
+        <button type='button' onClick={onClickOpen}>
+          검색결과에 없는 경우
+        </button>
       </Situation>
 
       <TypingCompany open={open}>
@@ -173,6 +194,7 @@ const SearchMyCompany = ({ onChangeCompany }) => {
           placeholder='직접 입력하기'
         />
         <button
+          type='button'
           onClick={() => {
             onChangeCompany(myCompany);
             displayCompanyName(myCompany);

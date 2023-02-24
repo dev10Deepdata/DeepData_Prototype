@@ -36,7 +36,6 @@ router.get('/loadwk/:region', async (req, res, next) => {
     const data = JSON.parse(wkData);
 
     let total = parseInt(data.smallGiantsList.total._text);
-    console.log('total: ', total);
     if (total <= 100) {
       res.status(200).json(data.smallGiantsList.smallGiant);
     } else {
@@ -46,16 +45,13 @@ router.get('/loadwk/:region', async (req, res, next) => {
       } else {
         page = Math.floor(total / 100);
       }
-      console.log('page: ', page);
       const fullData = [];
       for (let i = 0; i < page; i++) {
-        console.log(i);
         let wkPageData = await axios.get(
           `${process.env.WORKNET_API}&startPage=${i + 1}&display=100&region=${
             req.params.region
           }`
         );
-        console.log('wkData: ', wkPageData);
         let PageData = convert.xml2json(wkPageData.data, {
           compact: true,
           spaces: 2,
@@ -81,7 +77,6 @@ router.post('/savedata', async (req, res, next) => {
       address: req.body.address,
       product: req.body.product,
     });
-    console.log('server: ', check);
     await check.addLiked(req.body.meId);
     res.status(200).json(check);
   } catch (error) {

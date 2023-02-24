@@ -69,15 +69,20 @@ const Wrapper = styled.div`
     }
   }
 `;
-const AddDisplay = styled.button`
+const AddDisplay = styled.div`
   margin-right: auto;
   margin-top: 2px;
   border: none;
   border-radius: 6px;
+  width: 120px;
   height: 25px;
   background-color: #434242;
   color: #fff;
+  font-size: 0.7rem;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   :hover {
     background-color: #222222;

@@ -10,22 +10,21 @@ export const createMarker = (
   companyInfo,
   setCompanyInfo,
   startPoint,
-  krMap
 ) => {
   const temp = [];
   let info = [];
 
   city.map((v) => {
+    if (!v.coAddr) {
+      return;
+    }
     // , 제거
     let address = v.coAddr._text;
     if (address.indexOf(',')) {
       let cutstr = address.split(',');
       address = cutstr[0];
     }
-    // 유효성 검사
-    // if (address.indexOf(name) === -1) {
-    //   return;
-    // }
+
     let geocoder = new kakao.maps.services.Geocoder();
     geocoder.addressSearch(address, function (result, status) {
       // 정상적으로 검색이 완료됐으면
@@ -62,18 +61,13 @@ export const createMarker = (
           position: coords,
         });
         temp.push(marker);
-        // map.setCenter(coords);
 
         // 마커에 클릭이벤트를 등록합니다
         kakao.maps.event.addListener(marker, 'click', async (event) => {
-          // if (companyMarkers) {
-          //   deleteMarker(companyMarkers, setCompanyMarker);
-          // }
           if (info) {
             for (let i = 0; i < info.length; i++) {
               info[i].close();
             }
-            // info = [];
           }
           // 마커 위에 인포윈도우를 표시합니다
           try {
@@ -90,8 +84,6 @@ export const createMarker = (
 
             // 목적지 동작
             // -----------------------------<ing
-            console.log('start Point_Info: ', startPoint);
-            console.log('start Point_Info: ', startPoint.La);
             // const infoBtn = document.querySelector('#btnClick');
             // infoBtn.onclick = onSaveLike;
 
@@ -119,7 +111,7 @@ export const createMarker = (
                 imageOption
               );
               let EPmarker = new kakao.maps.Marker({
-                map: krMap,
+                map: map,
                 image: markerImage,
               });
               // 목적지 마커 생성
@@ -127,20 +119,21 @@ export const createMarker = (
                 new kakao.maps.LatLng(endPointData['Ma'], endPointData['La'])
               );
               EPmarker.setMap(map);
+              // setEPMarker(EPmarker);
               let polyline = new kakao.maps.Polyline({
-                map: krMap,
+                map: map,
                 strokeWeight: 5,
                 strokeColor: '#FF00FF',
                 strokeOpacity: 0.8,
                 strokeStyle: 'solid',
               });
+
               polyline.setPath(linePath);
               console.log('길이: ' + Math.round(polyline.getLength()));
               const $lineDistance = document.querySelector('#lineDistance');
               $lineDistance.textContent = `출발지점 -> 목적지(${
                 v.coNm._text
               }): ${Math.round(polyline.getLength())}M`;
-              // polyline.setMap(map);
               infowindow.close();
               var level = 10;
               map.setLevel(level, {
@@ -149,8 +142,13 @@ export const createMarker = (
                   endPointData['La']
                 ),
               });
-              // deleteMarker();
-              // deletePolygon(polygons);
+
+              const $removePoint = document.querySelector('#removePoint');
+              $removePoint.addEventListener('click', onRemovePoint);
+              function onRemovePoint() {
+                polyline.setMap(null);
+                EPmarker.setMap(null);
+              }
             }
             endPointBtn.onclick = onClickDistance;
             $infoBtnGroup.append(endPointBtn);

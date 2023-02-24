@@ -48,6 +48,30 @@ export const MapWrapper = styled.div`
     background-color: rgba(22, 255, 0, 0.2);
     color: #243763;
   }
+  .map-details-info {
+    background-color: #f0eeed;
+    table {
+      background-color: #dddddd;
+      tr {
+        background-color: #fff;
+      }
+    }
+  }
+  #infoBtnGroup {
+    button {
+      background-color: #f2921d;
+      border: none;
+      cursor: pointer;
+      border-radius: 10px;
+      padding: 5px 10px;
+      font-weight: 600;
+      overflow: hidden;
+    }
+    a {
+      text-decoration: none;
+      color: #000;
+    }
+  }
 `;
 export const ButtonWrapper = styled.div`
   #mapControl {

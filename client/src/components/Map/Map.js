@@ -20,6 +20,7 @@ import {
   REMOVE_COMPANY_DATA_REQUEST,
   REMOVE_OVERLAY_SUCCESS,
 } from '../../reducers/mapControl';
+import axios from 'axios';
 
 const Map = () => {
   const { kakao } = window;
@@ -37,9 +38,8 @@ const Map = () => {
   const [krMap, setKrMap] = useState(); // 카카오맵 저장
 
   // 출발지점 저장
-  const [startPoint, setStartPoint] = useState();
+  const [startPoint, setStartPoint] = useState([]);
   let SPmarker;
-  let EPmarker;
 
   // 폴리곤 보관
   let polygons = [];
@@ -137,17 +137,16 @@ const Map = () => {
 
     SPmarker = new kakao.maps.Marker({ map: krMap, image: markerImage });
 
-    // EPmarker.setMap(null);
     SPmarker.setMap(null);
 
     const $startPoint = document.querySelector('#startPoint');
-    const $removePoint = document.querySelector('#removePoint');
+    // const $removePoint = document.querySelector('#removePoint');
 
     let spFlag = false;
     // let startPointData;
 
     $startPoint.addEventListener('click', onChangeSpFlag);
-    $removePoint.addEventListener('click', onRemovePoint);
+    // $removePoint.addEventListener('click', onRemovePoint);
 
     function onChangeSpFlag() {
       spFlag = !spFlag;
@@ -161,15 +160,17 @@ const Map = () => {
       }
     }
 
-    /**
-     * 포인트 및 측정라인 제거
-     */
-    function onRemovePoint() {
-      console.log('remove Point');
-      polyline.setMap(null);
-      SPmarker.setMap(null);
-      EPmarker.setMap(null);
-    }
+    // /**
+    //  * 포인트 및 측정라인 제거
+    //  */
+    // function onRemovePoint() {
+    //   console.log('remove Point');
+    //   polyline.setMap(null);
+    //   SPmarker.setMap(null);
+    //   console.log(EPmarker);
+    //   // EPmarker.setMap(null);
+    //   // setEPMarker(null);
+    // }
 
     kakao.maps.event.addListener(krMap, 'click', function (mouseEvent) {
       if (spFlag) {
@@ -184,6 +185,22 @@ const Map = () => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [krMap]);
+
+  // useEffect(() => {
+  //   const $removePoint = document.querySelector('#removePoint');
+  //   $removePoint.addEventListener('click', onRemovePoint);
+  //   /**
+  //    * 포인트 및 측정라인 제거
+  //    */
+  //   function onRemovePoint() {
+  //     console.log('remove Point');
+  //     // polyline.setMap(null);
+  //     SPmarker.setMap(null);
+  //     console.log(EPmarker);
+  //     EPmarker.setMap(null);
+  //     setEPMarker(null);
+  //   }
+  // }, [SPmarker, EPmarker]);
 
   // 클러스터 생성 테스트 // 수정 필요
   useEffect(() => {
@@ -237,11 +254,12 @@ const Map = () => {
     }
     const divideCP = [];
     cityCompany.map((v) => {
-      if (v['coAddr']['_text'].indexOf(selectTown.li) !== -1) {
+      if (
+        (v['coAddr'] ? v['coAddr']['_text'].indexOf(selectTown.li) : '') !== -1
+      ) {
         divideCP.push(v);
       }
     });
-    // companyMarkers
     if (companyMarkers) {
       deleteMarker(companyMarkers, setCompanyMarker);
     }
@@ -253,10 +271,9 @@ const Map = () => {
       companyInfo,
       setCompanyInfo,
       startPoint,
-      krMap
     );
     console.log('marker: ', companyMarkers);
-  }, [cityCompany, selectTown, startPoint, EPmarker]);
+  }, [cityCompany, selectTown, startPoint]);
 
   // 기업카운터 제거
   useEffect(() => {
@@ -274,6 +291,19 @@ const Map = () => {
   }, [tempCountOverlay, customCountOverlay, removeOverlay, dispatch]);
   // end Map
 
+  // >> test
+  // const serach = async () => {
+  //   try {
+  //     const test = await axios.get(
+  //       `https://dapi.kakao.com/v2/local/search/route.json?start=서울특별시 강남구 역삼동 123-45&end=경기 성남시 분당구 판교역로 166&option=car`
+  //     );
+  //     console.log('test: ', test);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
+  // serach();
+  // >> end
   const onResetHandle = useCallback(() => {
     setKrMap(null);
     setRenderSwitch(true);
