@@ -9,10 +9,12 @@ export const createMarker = (
   setCompanyMarker,
   companyInfo,
   setCompanyInfo,
-  startPoint,
+  startPoint
 ) => {
   const temp = [];
   let info = [];
+  let EpPoint = [];
+  let line = [];
 
   city.map((v) => {
     if (!v.coAddr) {
@@ -95,6 +97,14 @@ export const createMarker = (
             //  * 목적지 지정 버튼 클릭시 동작
             //  */
             function onClickDistance() {
+              if (EpPoint || line) {
+                for (let i = 0; i < EpPoint.length; i++) {
+                  EpPoint[i].setMap(null);
+                }
+                for (let i = 0; i < line.length; i++) {
+                  line[i].setMap(null);
+                }
+              }
               const endPointData = coords;
               // 출발지, 목적지 좌표 정의
               let linePath = [
@@ -119,7 +129,6 @@ export const createMarker = (
                 new kakao.maps.LatLng(endPointData['Ma'], endPointData['La'])
               );
               EPmarker.setMap(map);
-              // setEPMarker(EPmarker);
               let polyline = new kakao.maps.Polyline({
                 map: map,
                 strokeWeight: 5,
@@ -135,13 +144,16 @@ export const createMarker = (
                 v.coNm._text
               }): ${Math.round(polyline.getLength())}M`;
               infowindow.close();
-              var level = 10;
+              var level = 8;
               map.setLevel(level, {
                 anchor: new kakao.maps.LatLng(
                   endPointData['Ma'],
                   endPointData['La']
                 ),
               });
+
+              EpPoint.push(EPmarker);
+              line.push(polyline);
 
               const $removePoint = document.querySelector('#removePoint');
               $removePoint.addEventListener('click', onRemovePoint);
