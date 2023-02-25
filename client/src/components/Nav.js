@@ -148,7 +148,7 @@ const Nav = () => {
               <div className='item'>Contact</div>
             </RightItem>
           </TopNav>
-          <Rank>{me ? likedRank() : ''}</Rank>
+          {/* <Rank>{me ? likedRank() : ''}</Rank> */}
         </Banner2>
       ) : (
         <Banner1>

@@ -95,29 +95,38 @@ export const ButtonWrapper = styled.div`
 export const PointInfoWrapper = styled.div`
   font-family: Noto_Sans_Bold;
   width: 100%;
-  height: 70px;
+  height: 150px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   background-color: #ffb100;
   border-bottom: 2px solid #000;
-
+  .btnWrapper {
+    width: 27%;
+  }
   button {
     font-family: Noto_Sans_Bold;
     display: block;
     position: relative;
     float: left;
-    width: 120px;
-    height: 40px;
+    width: 100%;
+    height: 65px;
     padding: 0;
     margin-left: 10px;
     font-weight: 600;
     text-align: center;
     color: #fff;
     border: none;
-    border-radius: 5px;
     transition: all 0.2s;
     cursor: pointer;
+  }
+  #startPoint {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+  #removePoint {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
   }
   #startPoint.btnFade {
     background: #00ae68;
@@ -138,15 +147,60 @@ export const PointInfoWrapper = styled.div`
   #removePoint.btnFade:hover {
     background: #6d184b;
   }
+  .lineContainer {
+    width: 70%;
+  }
   #lineDistance {
     background-color: #fff;
-    width: 52%;
-    height: 40px;
+    width: 70%;
+    height: 130px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     border-radius: 5px;
     margin-right: 10px;
+    input {
+      width: 95%;
+      text-align: center;
+      height: 55px;
+      border: none;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      border-bottom: 2px #eeeeee solid;
+    }
+    .lineItem {
+      display: flex;
+      align-items: center;
+    }
+    .lineItemTime {
+      width: 100px;
+      height: 50px;
+      border-bottom: 3px solid #eeeeee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lineTime {
+      width: 95%;
+      height: 55px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      img {
+        width: 40px;
+        margin-right: 10px;
+      }
+      .walkIcon {
+        height: 30px;
+      }
+      .cyclingIcon {
+        height: 30px;
+      }
+      .carIcon {
+        height: 60px;
+      }
+    }
   }
 `;
 export const InfoWrapper = styled.div``;

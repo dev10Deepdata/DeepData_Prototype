@@ -138,9 +138,11 @@ export const createMarker = (
               });
 
               polyline.setPath(linePath);
+
+              // 거리 표시
               console.log('길이: ' + Math.round(polyline.getLength()));
-              const $lineDistance = document.querySelector('#lineDistance');
-              $lineDistance.textContent = `출발지점 -> 목적지(${
+              const $distance = document.querySelector('.distance');
+              $distance.value = `출발지점 -> 목적지(${
                 v.coNm._text
               }): ${Math.round(polyline.getLength())}M`;
               infowindow.close();
@@ -151,6 +153,22 @@ export const createMarker = (
                   endPointData['La']
                 ),
               });
+              // 시간 표시
+              const $walk = document.querySelector('#walk');
+              const $cycling = document.querySelector('#cycling');
+              const $car = document.querySelector('#car');
+              // 도보의 시속은 평균 4km/h 이고 도보의 분속은 67m/min입니다
+              $walk.textContent = `${Math.round(
+                Math.round(polyline.getLength()) / 67
+              )}분`;
+              // 자전거의 평균 시속은 16km/h 이고 이것을 기준으로 자전거의 분속은 267m/min입니다
+              $cycling.textContent = `${Math.round(
+                Math.round(polyline.getLength()) / 227
+              )}분`;
+              // 자동차의 평균 시속은 60km/h 이고 이것을 기준으로 자동차의 분속은 996m/min입니다.
+              $car.textContent = `${Math.round(
+                Math.round(polyline.getLength()) / 996
+              )}분`;
 
               EpPoint.push(EPmarker);
               line.push(polyline);

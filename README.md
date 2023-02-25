@@ -1,4 +1,4 @@
-# DeepData_Prototype 1.0.0
+# DeepData_Prototype 1.0.1
 
 <br>
 
@@ -9,7 +9,7 @@
 <br>
 
 <p>
-공공데이터포털의 OpenAPI데이터 활용 및 카카오맵 API를 활용한 웹 어플리케이션으로 OpenAPI의 기업정보 데이터를 활용하여 카카오맵에 기업의 위치를 마커하고 마커에 기업정보를 담아 정보를 제공 한다. 사전 유저 정보를 통하여 접속한 유저가 관심을 가질만한 기업을 추천해주고, 접속한 유저들의 정보를 통해 연령, 성별 등을 기준으로 통계를 제공한다.
+공공데이터포털, 워크넷 OpenAPI데이터 활용 및 카카오맵 API를 활용한 웹 어플리케이션으로 공공데이터의 기업PAI를 통해 자신의 회사를 검색하는 기능을 제공하며, 워크넷의 강소기업에 대한 정보를 카카오맵과 제공되는 목록으로 표시 해준다.
 </p>
 
 ## 👐 기술 스택
@@ -39,146 +39,68 @@
 
 <br>
 
-- 기본 인적사항 기입 페이지
+- 기본 인적사항 및 공공데이터 OpenAPI를 활용한 기업검색 및 추가정보 입력
 
-```
-: 기본적인 인적사항을 클릭 후[ Go ] 버튼 클릭시 DataBase에 채크 된 인적사항을 저장 한다. <br>
-
-1. 성별, 연령별 관심있는 지역과 관심있는 회사의 통계를 내기 위해 사용 한다.
-```
+: 기본적인 인적사항을 클릭 후[ Go ] 버튼 클릭 하거나 추가정보를 입력 후 버튼을 클릭시 DataBase에 입력한 인적사항을 저장 한다.
 
 <br>
 
 <div align=center>
 
-![join_view](https://user-images.githubusercontent.com/123555721/214609339-61237a45-39b3-489f-9fed-a257e60f3095.gif)
+<p>Join Page preview</p>
 
+![join](https://user-images.githubusercontent.com/123555721/221360185-f22cdaef-b1c7-4d5f-a91f-ad082840c4ea.gif)
+
+  <p>재직중인 기업을 검색하여 선택할 수 있다.</p>
+  <p>공공데이터포털의 '금융위원회_기업기본정보' API를 활용하였다.</p>
+  <img src='./readme/join0.png' />
+
+  <p>자신의 회사가 검색결과가 없는 경우 직접 입력하는 공간을 제공한다.</p>
+  <img src='./readme/join1.png' />
 </div>
 
-<br>
-
-<img src='./readme/visits0126.png' />
+---
 
 <br>
 
-- 메인 페이지
-
-<br>
+- 카카오맵API 및 워크넷 기업정보API를 활용하여 정보 제공
 
 <div align=center>
 
-![main_view](https://user-images.githubusercontent.com/123555721/214609616-19466732-8629-4f5b-936b-80b8558c1c42.gif)
+<p>main Page Preview</p>
+
+![Feb-25-2023 22-23-51](https://user-images.githubusercontent.com/123555721/221360211-a9647473-1488-46ea-a7f4-7acb12706ded.gif)
+
+<p>도 - 시군구 - 읍면동 단위 폴리곤</p>
+
+![Feb-25-2023 22-26-54](https://user-images.githubusercontent.com/123555721/221360199-66b26dfd-54e6-4582-a741-c48bc2e10278.gif)
+
+<p>'도'를 클릭시 '시'별 내에 있는 강소기업의 수를 표시해준다.</p>
+
+<img src='./readme/cluster.png' />
+
+<p>'시'를 클릭시 강소기업의 정보를 담고있는 마커를 제공한다.</p>
+
+<img src='./readme/marker.png' />
+
+<p>마커를 클릭하여 기업의 정보를 확인 할 수 있으며 관심 버튼을 클릭하여 join 페이지에서 입력한 자신의 인적사항과 해당 기업을 DB에 저장할 수 있으며, 구글검색으로 이어주거나, 목적지로 선택 할 수 있다.</p>
+
+<img src='./readme/company.png' />
+
+<p>도, 시 단위 클릭시 해당 단위 내의 회사 기본정보 제공 및 페이지네이션 구현</p>
+
+![Feb-25-2023 22-27-02](https://user-images.githubusercontent.com/123555721/221360193-c7464555-c880-4ada-86fa-ad0c20b5b127.gif)
+
+<p>해당 지역의 기업을 리스트로 제공 및 페이지네이션을 구현 하였다.</p>
+
+<img src='./readme/list.png' />
+
+<p>두 지점간 직선 거리 및 소요시간(도보, 자전거, 차) 제공</p>
+
+![Feb-25-2023 22-30-29](https://user-images.githubusercontent.com/123555721/221360202-a6e29460-8642-4f32-9427-3b2719200816.gif)
+
+<p>출발지 - 목적지 간 거리및 소요시간 제공</p>
+
+<img src='./readme/line.png' />
 
 </div>
-
-<br>
-
-- 카카오맵 API 시군 및 읍면동에 대한 폴리곤 정의 및 이동
-
-<br>
-
-<div align=center>
-
-![move_view](https://user-images.githubusercontent.com/123555721/214609910-6fa0c49c-383b-4b65-a12d-c6aab326a417.gif)
-
-</div>
-
-<br>
-
-- 마커 클릭 시 회사 정보 제공 및 관심 버튼 정의
-
-```
-1. 마커 클릭시 회사에 대한 정보제공 _ 회사명, 주소, 대표이름, 법인번호, 사업자번호
-
-2. 관심 버튼 클릭시 DB에 저장
-```
-
-<br>
-
-<img src='./readme/company0126.png' />
-<img src='./readme/like0126.png' />
-
-<br>
-
-- 추가 정보 검색을 위한 구글 검색 연동
-
-<br>
-
-<div align=center>
-
-![seach_view](https://user-images.githubusercontent.com/123555721/214610129-cda9271b-f4e8-4710-ba61-8e98c79bf5e8.gif)
-
-</div>
-
-<br>
-
-- 출발지, 목적지 지정을 통한 포인트간 직선 거리( M 단위 ) 제공
-
-<br>
-
-<div align=center>
-
-![distance_view](https://user-images.githubusercontent.com/123555721/214610197-8475fef7-6c8d-45da-a8f0-1db44e833ff4.gif)
-
-</div>
-
-<br>
-
-## History
-
-1. 워크넷 api 기업 정보 불러오기
-
-- 접근 시도
-  1. redux -> server -> store (fail)
-     카카오맵 api가 useEffect 내부에서 동작하므로 hoock 사용이 불가
-     외부에서 useSelector을 이용해 store의 데이터를 불러오면 카카오맵 자체가 리랜더링 되면서 원하는 동작을 구현하지 못함
-  2. 카카오맵 내부에서 axios를 이용해 직접적으로 서버를 접근하여 데이터 받음 (success)
-
-2. ' npm run eject' 하여 CRA의 숨김 파일을 해제 하여 생긴 에러 해결
-
-```
-Parsing error: [BABEL] /Users/jochanho/Desktop/DeepData/deepdata_prototype/client/src/reducers/data.js: Using `babel-preset-react-app` requires that you specify `NODE_ENV` or `BABEL_ENV` environment variables. Valid values are "development", "test", and "production". Instead, received: undefined. (While processing: "/Users/jochanho/Desktop/DeepData/deepdata_prototype/client/node_modules/babel-preset-react-app/index.js")eslint
-```
-
-- package.json 의 eslintConfig에 아래 코드 추가
-
-```
-"eslintConfig": {
-    "env": {
-      "NODE_ENV": "development"
-    },
-   ...more code
-  },
-```
-
-- 코드에서 에러는 사라졌으나 프로그램 실행시 에러 발생
-
-```
-ERROR in [eslint] package.json:
-        Environment key "NODE_ENV" is unknown
-```
-
-- https://stackoverflow.com/questions/11928013/node-env-is-not-recognized-as-an-internal-or-external-command-operable-comman
-
-- 폴더 구조를 위해 git checkout -f 를 하여 원복
-- 다시 npm run eject를 하기 위해서는
-
-```
-npm uninstall react-scripts
-npm install react-scripts
-```
-
-3. 카카오맵 좌표 이동 첫 클릭시 지정된 좌표 까지 도달 하지 못하고 멈추는 문제점 발견 \_ 첫 클릭 이후에는 정상 작동
-
-기존 코드
-``` 
-  map.setLevel(10, {
-     animate: {
-       duration: 50, //확대 애니메이션 시간
-    },
-  });
-  map.setCenter(coor);
-```
-
-발견: 레벨을 확대하는 동작과 좌표로 이동하는 동작이 충돌하며 문제 발생
-1차 해결 애니메이션 제거

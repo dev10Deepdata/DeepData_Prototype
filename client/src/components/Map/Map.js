@@ -20,8 +20,9 @@ import {
   REMOVE_COMPANY_DATA_REQUEST,
   REMOVE_OVERLAY_SUCCESS,
 } from '../../reducers/mapControl';
-import axios from 'axios';
-
+import car from '../../utils/img/car.png';
+import cycling from '../../utils/img/cycling.png';
+import walk from '../../utils/img/walk.png';
 const Map = () => {
   const { kakao } = window;
   const {
@@ -207,7 +208,7 @@ const Map = () => {
     if (!(countOverlay && cityCompany)) {
       return;
     }
-    console.log('cityCompany', cityCompany);
+    // console.log('cityCompany', cityCompany);
     for (let i = 0; i < countOverlay.length; i++) {
       const divideCP = [];
       cityCompany.map((v) => {
@@ -270,7 +271,7 @@ const Map = () => {
       setCompanyMarker,
       companyInfo,
       setCompanyInfo,
-      startPoint,
+      startPoint
     );
     console.log('marker: ', companyMarkers);
   }, [cityCompany, selectTown, startPoint]);
@@ -291,19 +292,6 @@ const Map = () => {
   }, [tempCountOverlay, customCountOverlay, removeOverlay, dispatch]);
   // end Map
 
-  // >> test
-  // const serach = async () => {
-  //   try {
-  //     const test = await axios.get(
-  //       `https://dapi.kakao.com/v2/local/search/route.json?start=서울특별시 강남구 역삼동 123-45&end=경기 성남시 분당구 판교역로 166&option=car`
-  //     );
-  //     console.log('test: ', test);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-  // serach();
-  // >> end
   const onResetHandle = useCallback(() => {
     setKrMap(null);
     setRenderSwitch(true);
@@ -312,7 +300,7 @@ const Map = () => {
   return (
     <MapW>
       <PointInfoWrapper>
-        <div>
+        <div className='btnWrapper'>
           <button id='startPoint' className='btnFade'>
             출발지점 지정
           </button>
@@ -320,7 +308,28 @@ const Map = () => {
             포인트 초기화
           </button>
         </div>
-        <div id='lineDistance'></div>
+        <div id='lineDistance'>
+          <input
+            className='distance'
+            type='text'
+            placeholder='목적지를 생성시 거리를 측정합니다.'
+            disabled
+          />
+          <div className='lineTime'>
+            <div className='lineItem'>
+              <img src={walk} alt='walk' className='walkIcon' />
+              <div className='lineItemTime' id='walk'></div>
+            </div>
+            <div className='lineItem'>
+              <img src={cycling} alt='cycling' className='cyclingIcon' />
+              <div className='lineItemTime' id='cycling'></div>
+            </div>
+            <div className='lineItem'>
+              <img src={car} alt='car' className='carIcon' />
+              <div className='lineItemTime' id='car'></div>
+            </div>
+          </div>
+        </div>
       </PointInfoWrapper>
       <MapWrapper>
         <div id='kakaoMap'></div>
